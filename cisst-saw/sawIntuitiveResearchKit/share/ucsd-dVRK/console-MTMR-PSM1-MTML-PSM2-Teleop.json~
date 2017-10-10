@@ -1,0 +1,55 @@
+/* -*- Mode: Javascript; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
+{
+    "io": {
+        "firewire-protocol": "broadcast-read-write"
+    }
+    ,
+    "arms":
+    [
+        {
+            "name": "PSM1",
+            "type": "PSM",
+            "io": "xmlfiles/sawRobotIO1394-PSM1-61707.xml",
+            "pid": "sawControllersPID-PSM.xml",
+            "kinematic": "psm-large-needle-driver-PSM1.json"
+        }
+        ,
+        {
+            "name": "PSM2",
+            "type": "PSM",
+            "io": "xmlfiles/sawRobotIO1394-PSM2-27925.xml",
+            "pid": "sawControllersPID-PSM.xml",
+            "kinematic": "psm-large-needle-driver-PSM2.json"
+        }
+        ,
+        {
+            "name": "MTMR",
+            "type": "MTM",
+            "io": "xmlfiles/sawRobotIO1394-MTMR-18545.xml",
+            "pid": "sawControllersPID-MTMR.xml",
+            "kinematic": "mtm.json"
+        }
+        ,
+        {
+            "name": "MTML",
+            "type": "MTM",
+            "io": "xmlfiles/sawRobotIO1394-MTML-foot-pedal-36887.xml",
+            "pid": "sawControllersPID-MTML.xml",
+            "kinematic": "mtm.json"
+        }
+    ]
+    ,
+    "psm-teleops":
+    [
+        {
+            "master": "MTMR",
+            "slave": "PSM1"
+
+        }
+        ,
+        {
+            "master": "MTML",
+            "slave": "PSM2"
+        }
+    ]
+}

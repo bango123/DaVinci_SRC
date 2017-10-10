@@ -1,0 +1,3 @@
+1) Foot pedals are connected to MTML NOT MTMR
+2) The .cal files were taken from original code base
+3) The .xml files (in xmlfiles folder) corresponding to the .cal files were taken from original code base. They should be re-generated and re-calibrated.

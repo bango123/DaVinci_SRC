@@ -1,0 +1,25 @@
+M- cisst 1.0.8 (git: )
+M- CISST_ROOT: undefined
+M- cisst share: undefined
+M- cmn_m: 1, cmn_kg: 1, CISST_USE_SI_UNITS is set to 1
+-M Class camera: RemoveInterfaceRequired: removed required interface "ExecIn"
+M- Class camera: Create: creating thread for task cameraL
+M--M Class camera: RemoveInterfaceRequired: removed required interface "ExecIn"
+M- Class camera: Create: creating thread for task cameraR
+ Class camera: StartupInternal: started for task "cameraL"
+M- Class camera: WaitForState: waiting for task "cameraL" to enter state "mtsComponentState
+  State:ready" Class 
+cameraM- Class camera: WaitForState: waiting for task "cameraL" to enter state "mtsComponentState
+  State:ready" Class 
+camera: StartupInternal: started for task "cameraR"
+M- Class camera: StartupInternal: ended for task "cameraR"
+M- Class camera: RunInternal: cameraR Wait to start.
+M- C Class  Class camera: cameraStartupInternal: ended for task ": cameraL"WaitForState: waited for 
+M- seconds. Class camera: RunInternal: 
+cameraL Wait to start.
+M- seconds. Class camera: RunInternal: 
+cameraL Wait to start.
+M- Class camera: Start: starting task cameraL
+M- Class camera: Start: started task cameraL
+M- Class camera: Start: starting task cameraR
+M- Class camera: Start: started task cameraR

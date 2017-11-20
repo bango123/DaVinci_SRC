@@ -39,7 +39,7 @@ set (REQUIRED_CISST_LIBRARIES
      cisstParameterTypesQt
      cisstRobot
      cisstNumerical
-     cisstQt
+     #cisstQtc
      )
 
 find_package (cisst 1.0.8 REQUIRED ${REQUIRED_CISST_LIBRARIES})

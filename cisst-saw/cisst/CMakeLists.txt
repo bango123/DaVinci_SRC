@@ -39,7 +39,7 @@ mark_as_advanced (CISST_HAS_CMAKE_DEBUG)
 
 # Options
 option (CISST_BUILD_TESTS "Build cisst tests (when turned ON, all tests are to be compiled by default)." OFF)
-option (CISST_BUILD_EXAMPLES "Build cisst examples (when turned ON, user will be asked to select which examples to build)." OFF)
+option (CISST_BUILD_EXAMPLES "Build cisst examples (when turned ON, user will be asked to select which examples to build)." ON)
 
 # Applications should be compiled by default
 option (CISST_BUILD_APPLICATIONS "Build cisst applications (when turned ON, all applications are to be compile by default)." ON)
@@ -386,7 +386,8 @@ set (CISST_LIBRARIES_DEFAULT
      cisstMultiTask
      cisstParameterTypes
      cisstRobot
-     cisstStereoVision
+     #cisstStereoVision
+     cisstOurStereoVision
      )
 
 set (CISST_LIBRARIES_OPTIONAL

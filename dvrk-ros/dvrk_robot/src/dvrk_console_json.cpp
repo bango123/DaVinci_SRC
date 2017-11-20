@@ -166,6 +166,13 @@ int main(int argc, char ** argv)
     componentManager->CreateAllAndWait(2.0 * cmn_s);
     componentManager->StartAllAndWait(2.0 * cmn_s);
 
+    //Create camera instances
+    //DeckLinkCaptureDelegate* deckLinkCaptureDelegateL = new DeckLinkCaptureDelegate(true, true);
+    //DeckLinkCaptureDelegate* deckLinkCaptureDelegateR = new DeckLinkCaptureDelegate(false, true);
+
+    //deckLinkCaptureDelegateL->startStream();
+    //deckLinkCaptureDelegateR->startStream();
+
     if (hasQt) {
         application->exec();
     } else {
@@ -173,6 +180,10 @@ int main(int argc, char ** argv)
             std::cout << "Press 'q' to quit" << std::endl;
         } while (cmnGetChar() != 'q');
     }
+
+    //Disconnect cameras
+    //deckLinkCaptureDelegateL->disconectDeckLink();
+    //deckLinkCaptureDelegateR->disconectDeckLink();
 
     componentManager->KillAllAndWait(2.0 * cmn_s);
     componentManager->Cleanup();

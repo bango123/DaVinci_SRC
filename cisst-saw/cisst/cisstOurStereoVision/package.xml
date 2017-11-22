@@ -1,14 +1,11 @@
 <?xml version="1.0"?>
 <package>
   <name>cisstOurStereoVision</name>
-  <version>1.2.0</version>
+  <version>1.0.0</version>
   <description>The cisstOurStereoVision package</description>
 
-  <maintainer email="zihan.chen@jhu.edu">Zihan Chen</maintainer>
+  <maintainer email="frichter.eng@ucsd.edu">Florian Richter</maintainer>
   <license>CISST</license>
-
-  <author email="anton.deguet@jhu.edu">Anton Deguet</author>
-  <author email="zihan.chen@jhu.edu">Zihan Chen</author>
 
   <buildtool_depend>catkin</buildtool_depend>
   <build_depend>geometry_msgs</build_depend>

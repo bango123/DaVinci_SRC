@@ -7,13 +7,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-//#include <sensor_msgs/image_encodings.h>
-//#include <ros/time.h>
-
-#include <QThread>
-#include <QMutex>
-#include <boost/circular_buffer.hpp>
-
 #include <ros/ros.h>
 #include <opencv2/core/core.hpp>
 
@@ -44,8 +37,16 @@ DeckLinkCaptureDelegate::DeckLinkCaptureDelegate(bool isLeftCamera):
    if(error == -1){
      return;
     }
-    //std::cout << std::cref(m_FrameQueue) << std::endl;
-    workerThread = new DeckLinkCaptureWorker(m_isLeftCamera);
+
+   //Create worker class
+   if(m_isLeftCamera){
+      ros::NodeHandle nh("stereo/left");
+      workerThread = new DeckLinkCaptureWorker(m_isLeftCamera, nh);
+   }
+   else{
+      ros::NodeHandle nh("stereo/right");
+      workerThread = new DeckLinkCaptureWorker(m_isLeftCamera, nh);
+   }
 
    return;
 }

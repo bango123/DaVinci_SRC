@@ -1,15 +1,10 @@
 #include <cisstOurStereoVision/include/DeckLinkCaptureWorker.h>
 
-#include <opencv2/core/core.hpp>
 //#include <opencv2/core/cuda.hpp>
 //#include <opencv2/cudaimgproc.hpp>
+
 #include <opencv2/imgproc/imgproc.hpp>
-
 #include <cv_bridge/cv_bridge.h>
-#include <sensor_msgs/image_encodings.h>
-#include <ros/time.h>
-
-#include <QMutex>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -31,17 +26,23 @@ void handler(int sig) {
 }
 
 
-DeckLinkCaptureWorker::DeckLinkCaptureWorker( bool isLeftCamera) :
+DeckLinkCaptureWorker::DeckLinkCaptureWorker( bool isLeftCamera, ros::NodeHandle nh) :
     m_isLeftCamera(isLeftCamera),
-    it_(nh_)
+    nh_(nh),
+    cinfo_(nh_),
+    it_(nh_),
+    image_pub_( it_.advertiseCamera("image_raw", 1) )
 {
+  if(m_isLeftCamera){
+    cinfo_.setCameraName("left");
+  }
+  else{
+    cinfo_.setCameraName("right");
+  }
+
+  cinfo_.loadCameraInfo("file://${ROS_HOME}/camera_info/${NAME}.yaml");
+
   signal(SIGSEGV, handler);
-    if( m_isLeftCamera){
-      image_pub_ = it_.advertise("stereo/left", 1);
-    }
-    else{
-      image_pub_ = it_.advertise("stereo/right", 1);
-    }
 }
 
 
@@ -53,6 +54,7 @@ void DeckLinkCaptureWorker::setFrame(const cv::Mat frame, const std_msgs::Header
 }
 
 void DeckLinkCaptureWorker::run() {
+
 
   cv_bridge::CvImage out_msg;
   out_msg.header   = m_header;
@@ -70,8 +72,18 @@ void DeckLinkCaptureWorker::run() {
   cv::cvtColor(m_frame, m_frame, CV_YUV2RGB_UYVY);
   //mutex.unlock();
 
-
   out_msg.image = m_frame;
-  image_pub_.publish(out_msg.toImageMsg());
 
+  sensor_msgs::CameraInfoPtr ci(new sensor_msgs::CameraInfo(cinfo_.getCameraInfo()));
+
+  ci->header.frame_id = out_msg.header.frame_id;
+  ci->header.stamp = out_msg.header.stamp;
+
+  ci->height = roi.height;
+  ci->width  = roi.width;
+
+  //sensor_msgs::ImageConstPtr ptr_out_msg = out_msg.toImageMsg();
+  //sensor_msgs::CameraInfoConstPtr ptr_ci = ci;
+
+  image_pub_.publish(out_msg.toImageMsg(), ci);
 }

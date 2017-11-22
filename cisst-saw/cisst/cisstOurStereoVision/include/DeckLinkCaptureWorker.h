@@ -7,6 +7,8 @@
 
 #include <ros/ros.h>
 #include <image_transport/image_transport.h>
+#include <image_transport/camera_publisher.h>
+#include <camera_info_manager/camera_info_manager.h>
 
 
 class DeckLinkCaptureWorker : public QThread
@@ -14,7 +16,8 @@ class DeckLinkCaptureWorker : public QThread
   Q_OBJECT
 
 public:
-    DeckLinkCaptureWorker( bool isLeftCamera);
+    //delay here is the amount of delay being added before publishing in ms.
+    DeckLinkCaptureWorker( bool isLeftCamera, ros::NodeHandle nh);
     ~DeckLinkCaptureWorker(){}
 
     void setFrame(const cv::Mat frame, const std_msgs::Header header);
@@ -27,9 +30,10 @@ signals:
     void error(QString err);
 
 private:
-    ros::NodeHandle nh_;
-    image_transport::ImageTransport it_;
-    image_transport::Publisher image_pub_;
+    ros::NodeHandle                         nh_;
+    image_transport::ImageTransport         it_;
+    image_transport::CameraPublisher        image_pub_;
+    camera_info_manager::CameraInfoManager  cinfo_;
 
 
 

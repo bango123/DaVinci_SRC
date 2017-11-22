@@ -7,6 +7,7 @@ find_package(catkin REQUIRED COMPONENTS
     sensor_msgs
     std_msgs
     image_transport
+    camera_info_manager
     )
 
 #find_package(OpenCV 3 REQUIRED PATHS /usr/local/share/OpenCV NO_DEFAULT_PATH)
@@ -14,7 +15,7 @@ find_package(OpenCV REQUIRED)
 
 catkin_package(
   INCLUDE_DIRS include
-  LIBRARIES cisstOurStereoVision
+  LIBRARIES ${PROJECT_NAME}
   CATKIN_DEPENDS geometry_msgs roscpp rospy sensor_msgs std_msgs
 )
 

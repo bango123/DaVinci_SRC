@@ -16,3 +16,5 @@ rosrun dvrk_robot dvrk_console_json -j ~/catkin_ws/src/cisst-saw/sawIntuitiveRes
 
 To have cameras running by themselves publishing to ROS:
 ~/catkin_ws/devel/lib/cisstOurStereoVision/testCameraCaptureDelegate
+
+From there, use image_viewer to display the images. Also there are ros-blocks located that can be applied to the data.

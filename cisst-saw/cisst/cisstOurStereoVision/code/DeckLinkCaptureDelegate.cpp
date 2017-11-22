@@ -82,7 +82,7 @@ HRESULT DeckLinkCaptureDelegate::VideoInputFrameArrived(IDeckLinkVideoInputFrame
     printf("--------- Left New Frame---------\n");
   }
   else{
-    printf("---------Right New Frame---------\n");
+    //printf("---------Right New Frame---------\n");
   }
 
 
@@ -92,9 +92,11 @@ HRESULT DeckLinkCaptureDelegate::VideoInputFrameArrived(IDeckLinkVideoInputFrame
   m_timeOfLastFrame = clock();
 
   //std::cout << "Frame Arrived at " << m_timeOfLastFrame/( CLOCKS_PER_SEC / 1000 ) <<std::endl;
-  std::cout << "Time Stamp: " << m_HeaderQueue.front().stamp << std::endl;
-  std::cout << "Sequence  : " << m_HeaderQueue.front().seq << std::endl;
-  std::cout << "Frame ID  : " << m_HeaderQueue.front().frame_id << std::endl;
+  if(m_isLeftCamera){
+    std::cout << "Time Stamp: " << m_HeaderQueue.front().stamp << std::endl;
+    std::cout << "Sequence  : " << m_HeaderQueue.front().seq << std::endl;
+    std::cout << "Frame ID  : " << m_HeaderQueue.front().frame_id << std::endl;
+  }
   if( !videoFrame){
     printf("Video Frame is Null\n");
     return E_FAIL;

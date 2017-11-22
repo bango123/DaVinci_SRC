@@ -15,17 +15,6 @@
 
 int main(int argc, char** argv)
 {
-  //Delay in ms!!
-  int delay = 0;
-
-  //Command line inputs for this program
-  for(int i = 0; i < argc; i ++){
-    if( (0 == strcmp(argv[i], "-d")) && i < argc-1 ){
-      delay =  boost::lexical_cast<int>(argv[i+1]);
-    }
-  }
-  std::cout<< delay << std::endl;
-
   ros::init(argc, argv, "stereo_publisher");
 
   DeckLinkCaptureDelegate* deckLinkCaptureDelegateL = new DeckLinkCaptureDelegate(true);

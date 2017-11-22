@@ -20,8 +20,8 @@ public:
   //Delay flag is ms of added delay before image is published
   DeckLinkCaptureDelegate(bool isLeftCamera);
 
-  boost::circular_buffer<cv::Mat> m_FrameQueue = boost::circular_buffer<cv::Mat>(10);
-  boost::circular_buffer<std_msgs::Header> m_HeaderQueue = boost::circular_buffer<std_msgs::Header>(10);
+  boost::circular_buffer<cv::Mat> m_FrameQueue            = boost::circular_buffer<cv::Mat>(10);
+  boost::circular_buffer<std_msgs::Header> m_HeaderQueue  = boost::circular_buffer<std_msgs::Header>(10);
 
   bool                      m_isLeftCamera;
 

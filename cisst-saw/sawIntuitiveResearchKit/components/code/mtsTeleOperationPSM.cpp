@@ -542,6 +542,7 @@ void mtsTeleOperationPSM::EnterEnabled(void)
 
 void mtsTeleOperationPSM::RunEnabled(void)
 {
+
     if (mMTM->PositionCartesianCurrent.Valid()
         && mPSM->PositionCartesianCurrent.Valid()) {
         // follow mode
@@ -551,6 +552,7 @@ void mtsTeleOperationPSM::RunEnabled(void)
             vctFrm4x4 masterPosition(mMTM->PositionCartesianCurrent.Position());
             masterCartesianMotion = mMTM->CartesianPrevious.Inverse() * masterPosition;
 
+
             // translation
             vct3 masterTranslation;
             vct3 slaveTranslation;
@@ -559,6 +561,7 @@ void mtsTeleOperationPSM::RunEnabled(void)
             } else {
                 masterTranslation = (masterPosition.Translation() - mMTM->CartesianPrevious.Translation());
                 slaveTranslation = masterTranslation * mScale;
+
                 slaveTranslation = mRegistrationRotation * slaveTranslation + mPSM->CartesianPrevious.Translation();
             }
             // rotation

@@ -173,8 +173,9 @@ void mtsIntuitiveResearchKitConsoleQtWidget::setupUi(void)
     new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_S), this, SLOT(SlotTeleopStop()));
     teleopLayout->addWidget(QPBTeleopStop);
     QSBScale = new QDoubleSpinBox();
-    QSBScale->setRange(0.1, 1.0);
-    QSBScale->setSingleStep(0.1);
+    QSBScale->setDecimals(4);
+    QSBScale->setRange(0.05, 1.0);
+    QSBScale->setSingleStep(0.05);
     QSBScale->setPrefix("scale ");
     QSBScale->setValue(0.2);
     teleopLayout->addWidget(QSBScale);
@@ -237,6 +238,7 @@ void mtsIntuitiveResearchKitConsoleQtWidget::setupUi(void)
 void mtsIntuitiveResearchKitConsoleQtWidget::SlotScaleEventHandler(double scale)
 {
     QSBScale->setValue(scale);
+    //std::cout << "Scale set to: " << scale << std::endl;
 }
 
 void mtsIntuitiveResearchKitConsoleQtWidget::ScaleEventHandler(const double & scale)

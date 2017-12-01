@@ -53,8 +53,11 @@ mtsIntuitiveResearchKitConsoleQtWidget::mtsIntuitiveResearchKitConsoleQtWidget(c
         interfaceRequired->AddFunction("Home", Console.Home);
         interfaceRequired->AddFunction("TeleopEnable", Console.TeleopEnable);
         interfaceRequired->AddFunction("SetScale", Console.SetScale);
+        interfaceRequired->AddFunction("SetDelay", Console.SetDelay);
         interfaceRequired->AddEventHandlerWrite(&mtsIntuitiveResearchKitConsoleQtWidget::ScaleEventHandler,
                                                 this, "Scale");
+        interfaceRequired->AddEventHandlerWrite(&mtsIntuitiveResearchKitConsoleQtWidget::DelayEventHandler,
+                                                this, "Delay");
         interfaceRequired->AddEventHandlerWrite(&mtsIntuitiveResearchKitConsoleQtWidget::ErrorEventHandler,
                                                     this, "Error");
         interfaceRequired->AddEventHandlerWrite(&mtsIntuitiveResearchKitConsoleQtWidget::WarningEventHandler,
@@ -89,6 +92,7 @@ void mtsIntuitiveResearchKitConsoleQtWidget::HasTeleOp(const bool & hasTeleOp)
     QPBTeleopStart->setEnabled(hasTeleOp);
     QPBTeleopStop->setEnabled(hasTeleOp);
     QSBScale->setEnabled(hasTeleOp);
+    QSBDelay->setEnabled(hasTeleOp);
 }
 
 void mtsIntuitiveResearchKitConsoleQtWidget::closeEvent(QCloseEvent * event)
@@ -131,6 +135,11 @@ void mtsIntuitiveResearchKitConsoleQtWidget::SlotTeleopStop(void)
 void mtsIntuitiveResearchKitConsoleQtWidget::SlotSetScale(double scale)
 {
     Console.SetScale(scale);
+}
+
+void mtsIntuitiveResearchKitConsoleQtWidget::SlotSetDelay(double delay)
+{
+    Console.SetDelay(delay);
 }
 
 void mtsIntuitiveResearchKitConsoleQtWidget::SlotTextChanged(void)
@@ -180,6 +189,14 @@ void mtsIntuitiveResearchKitConsoleQtWidget::setupUi(void)
     QSBScale->setValue(0.2);
     teleopLayout->addWidget(QSBScale);
 
+    QSBDelay = new QDoubleSpinBox();
+    QSBDelay->setDecimals(0);
+    QSBDelay->setRange(0, 500);
+    QSBDelay->setSingleStep(10);
+    QSBDelay->setPrefix("Delay (ms) ");
+    QSBDelay->setValue(0);
+    teleopLayout->addWidget(QSBDelay);
+
     boxLayout->addStretch(100);
     buttonsWidget->setFixedWidth(buttonsWidget->sizeHint().width());
     mainLayout->addWidget(buttonsWidget);
@@ -219,10 +236,16 @@ void mtsIntuitiveResearchKitConsoleQtWidget::setupUi(void)
             this, SLOT(SlotTeleopStart()));
     connect(QPBTeleopStop, SIGNAL(clicked()),
             this, SLOT(SlotTeleopStop()));
+
     connect(QSBScale, SIGNAL(valueChanged(double)),
             this, SLOT(SlotSetScale(double)));
     connect(this, SIGNAL(SignalScale(double)),
             this, SLOT(SlotScaleEventHandler(double)));
+
+    connect(QSBDelay, SIGNAL(valueChanged(double)),
+            this, SLOT(SlotSetDelay(double)));
+    connect(this, SIGNAL(SignalDelay(double)),
+            this, SLOT(SlotDelayEventHandler(double)));
 
     // messages
     connect(this, SIGNAL(SignalAppendMessage(QString)),
@@ -238,12 +261,20 @@ void mtsIntuitiveResearchKitConsoleQtWidget::setupUi(void)
 void mtsIntuitiveResearchKitConsoleQtWidget::SlotScaleEventHandler(double scale)
 {
     QSBScale->setValue(scale);
-    //std::cout << "Scale set to: " << scale << std::endl;
 }
 
 void mtsIntuitiveResearchKitConsoleQtWidget::ScaleEventHandler(const double & scale)
 {
     emit SignalScale(scale);
+}
+
+void mtsIntuitiveResearchKitConsoleQtWidget::SlotDelayEventHandler(double delay){
+    QSBDelay->setValue(delay);
+}
+
+void mtsIntuitiveResearchKitConsoleQtWidget::DelayEventHandler(const double & delay)
+{
+    emit SignalScale(delay);
 }
 
 void mtsIntuitiveResearchKitConsoleQtWidget::ErrorEventHandler(const std::string & message)

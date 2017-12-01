@@ -27,6 +27,10 @@ http://www.cisst.org/cisst/license.txt.
 
 #include <sawIntuitiveResearchKit/sawIntuitiveResearchKitExport.h>
 
+#include <ros/ros.h>
+#include <boost/circular_buffer.hpp>
+
+
 class CISST_EXPORT mtsIntuitiveResearchKitPSM: public mtsIntuitiveResearchKitArm
 {
     CMN_DECLARE_SERVICES(CMN_DYNAMIC_CREATION_ONEARG, CMN_LOG_ALLOW_DEFAULT);
@@ -40,6 +44,13 @@ public:
     void Configure(const std::string & filename);
 
 protected:
+    double mDelay;
+
+    boost::circular_buffer<prmPositionCartesianSet> m_PositionCoordinates_buffer  = boost::circular_buffer<prmPositionCartesianSet>(1000);
+    boost::circular_buffer<ros::Time> m_Position_TimeStamps_buffer                = boost::circular_buffer<ros::Time>(1000);
+
+    boost::circular_buffer<double> m_Jaw_buffer                                   = boost::circular_buffer<double>(1000);
+    boost::circular_buffer<ros::Time> m_Jaw_TimeStamps_buffer                     = boost::circular_buffer<ros::Time>(1000);
 
     // PSM Optimizer
     mtsIntuitiveResearchKitOptimizer * Optimizer;
@@ -106,6 +117,7 @@ protected:
 
     void SetPositionCartesian(const prmPositionCartesianSet & newPosition);
     void SetJawPosition(const double & openAngle);
+    void SetDelay(const double & delay);
     void EnableJointsEventHandler(const vctBoolVec & enable);
     void CouplingEventHandler(const prmActuatorJointCoupling & coupling);
 

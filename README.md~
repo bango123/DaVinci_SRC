@@ -15,6 +15,19 @@ To run DVRK:
 rosrun dvrk_robot dvrk_console_json -j ~/catkin_ws/src/cisst-saw/sawIntuitiveResearchKit/share/ucsd-dVRK/console-MTMR-PSM1-MTML-PSM2-Teleop.json -i ~/catkin_ws/src/cisst-saw/sawIntuitiveResearchKit/share/ros-io-PSM2.json -i ~/catkin_ws/src/cisst-saw/sawIntuitiveResearchKit/share/ros-io-PSM1.json -i ~/catkin_ws/src/cisst-saw/sawIntuitiveResearchKit/share/ros-io-MTML.json -i ~/catkin_ws/src/cisst-saw/sawIntuitiveResearchKit/share/ros-io-MTMR.json
 
 To have cameras running by themselves publishing to ROS:
-~/catkin_ws/devel/lib/cisstOurStereoVision/testCameraCaptureDelegate
+~/catkin_ws/devel/lib/ourStereoVision/testCameraCaptureDelegate
 
-From there, use image_viewer to display the images. Also there are ros-blocks located that can be applied to the data.
+From there, use image_viewer to display the images. Like so:
+rosrun image_view image_view image:=/stereo/left/image_raw
+rosrun image_view image_view image:=/stereo/right/image_raw
+
+To run stereo calibration:
+1) Run stereo calibration pacakge
+rosrun camera_calibration cameracalibrator.py --size 8x6 --square 0.025 right:=/stereo/right/image_raw left:=/stereo/left/image_raw right_camera:=/stereo/right left_camera:=/stereo/left approximate_sync:=true --approximate=0.01
+Note: change --size and --square (m units) to fit the checkerboard used
+2) Save the file (do not try to commit results, it WILL crash). Then extract the output to ~/.ros/camera_info/
+3) Restart the camera streams
+4) To run disparity run this command:
+ROS_NAMESPACE=stereo rosrun stereo_image_proc stereo_image_proc stereo:=/stereo/ image:=image_raw _approximate_sync:=true
+5) To view disparity run this:
+rosrun image_view image_view image:=/stereo/right/image_raw

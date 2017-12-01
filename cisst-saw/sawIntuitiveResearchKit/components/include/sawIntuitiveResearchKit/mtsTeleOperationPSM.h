@@ -44,6 +44,7 @@ public:
     void Cleanup(void);
 
     void SetScale(const double & scale);
+    void SetDelay(const double & delay);
     void SetRegistrationRotation(const vctMatRot3 & rotation);
     void LockRotation(const bool & lock);
     void LockTranslation(const bool & lock);
@@ -70,6 +71,7 @@ protected:
 
     struct {
         mtsFunctionWrite Scale;
+        mtsFunctionWrite Delay;
         mtsFunctionWrite RotationLocked;
         mtsFunctionWrite TranslationLocked;
     } ConfigurationEvents;
@@ -119,6 +121,7 @@ protected:
 
         mtsFunctionRead  GetRobotControlState;
         mtsFunctionWrite SetRobotControlState;
+        mtsFunctionWrite SetDelay;
 
         prmPositionCartesianGet PositionCartesianCurrent;
         prmPositionCartesianSet PositionCartesianSet;
@@ -127,6 +130,7 @@ protected:
     RobotPSM * mPSM;
 
     double mScale;
+    double mDelay;
     vctMatRot3 mRegistrationRotation;
 
     bool mIsClutched;

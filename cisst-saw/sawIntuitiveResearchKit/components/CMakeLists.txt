@@ -13,6 +13,14 @@ project (sawIntuitiveResearchKit)
 
 cmake_minimum_required (VERSION 2.8)
 
+find_package(catkin REQUIRED COMPONENTS
+  geometry_msgs
+  roscpp
+  rospy
+  sensor_msgs
+  std_msgs
+  )
+
 set (REQUIRED_CISST_LIBRARIES
      cisstCommon
      cisstCommonXML
@@ -49,11 +57,13 @@ if (cisst_FOUND)
     # saw components configuration
     include_directories (${sawRobotIO1394_INCLUDE_DIR}
                          ${sawControllers_INCLUDE_DIR}
-                         ${sawConstraintController_INCLUDE_DIR})
+                         ${sawConstraintController_INCLUDE_DIR}
+                         ${catkin_INCLUDE_DIR})
 
     link_directories (${sawRobotIO1394_LIBRARY_DIR}
                       ${sawControllers_LIBRARY_DIR}
-                      ${sawConstraintController_LIBRARY_DIR})
+                      ${sawConstraintController_LIBRARY_DIR}
+                      ${catkin_LIBRARY_DIR})
 
     # catkin/ROS paths
     cisst_is_catkin_build (sawIntuitiveResearchKit_IS_CATKIN_BUILT)

@@ -48,6 +48,7 @@ public:
 
 signals:
     void SignalScale(double scale);
+    void SignalDelay(double delay);
     void SignalAppendMessage(QString);
     void SignalSetColor(QColor);
 
@@ -57,8 +58,10 @@ private slots:
     void SlotTeleopStart(void);
     void SlotTeleopStop(void);
     void SlotSetScale(double scale);
+    void SlotSetDelay(double delay);
 
     void SlotScaleEventHandler(double scale);
+    void SlotDelayEventHandler(double delay);
     void SlotTextChanged(void);
 
 protected:
@@ -71,9 +74,11 @@ protected:
         mtsFunctionVoid Home;
         mtsFunctionWrite TeleopEnable;
         mtsFunctionWrite SetScale;
+        mtsFunctionWrite SetDelay;
     } Console;
 
     void ScaleEventHandler(const double & scale);
+    void DelayEventHandler(const double & delay);
     void ErrorEventHandler(const std::string & message);
     void WarningEventHandler(const std::string & message);
     void StatusEventHandler(const std::string & message);
@@ -83,6 +88,7 @@ protected:
     QPushButton * QPBTeleopStart;
     QPushButton * QPBTeleopStop;
     QDoubleSpinBox * QSBScale;
+    QDoubleSpinBox * QSBDelay;
     QTabWidget * QTWidgets;
     QTextEdit * QTEMessages;
 };

@@ -184,6 +184,7 @@ public:
         std::string mConsoleName;
         mtsFunctionWrite SetDesiredState;
         mtsFunctionWrite SetScale;
+        mtsFunctionWrite SetDelay;
         mtsInterfaceRequired * InterfaceRequired;
     };
 
@@ -255,6 +256,8 @@ protected:
     void TeleopEnable(const bool & enable);
     void UpdateTeleopState(void);
     void SetScale(const double & scale);
+    void SetDelay(const double & delay);
+
     bool mHasIO;
     bool mHasFootpedals;
     void ClutchEventHandler(const prmEventButton & button);
@@ -280,6 +283,7 @@ protected:
     } MessageEvents;
     struct {
         mtsFunctionWrite Scale;
+        mtsFunctionWrite Delay;
     } ConfigurationEvents;
 
     void ErrorEventHandler(const std::string & message);

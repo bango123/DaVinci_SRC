@@ -463,8 +463,12 @@ mtsIntuitiveResearchKitConsole::mtsIntuitiveResearchKitConsole(const std::string
                                            "TeleopEnable", false);
         interfaceProvided->AddCommandWrite(&mtsIntuitiveResearchKitConsole::SetScale, this,
                                            "SetScale", 0.5);
+        interfaceProvided->AddCommandWrite(&mtsIntuitiveResearchKitConsole::SetDelay, this,
+                                           "SetDelay", 0.0);
         interfaceProvided->AddEventWrite(ConfigurationEvents.Scale,
                                          "Scale", 0.5);
+        interfaceProvided->AddEventWrite(ConfigurationEvents.Delay,
+                                         "Delay", 0);
         interfaceProvided->AddEventWrite(MessageEvents.Error, "Error", std::string(""));
         interfaceProvided->AddEventWrite(MessageEvents.Warning, "Warning", std::string(""));
         interfaceProvided->AddEventWrite(MessageEvents.Status, "Status", std::string(""));
@@ -812,6 +816,7 @@ bool mtsIntuitiveResearchKitConsole::AddTeleopPSMInterfaces(TeleopPSM * teleop)
     if (teleop->InterfaceRequired) {
         teleop->InterfaceRequired->AddFunction("SetDesiredState", teleop->SetDesiredState);
         teleop->InterfaceRequired->AddFunction("SetScale", teleop->SetScale);
+        teleop->InterfaceRequired->AddFunction("SetDelay", teleop->SetDelay);
         teleop->InterfaceRequired->AddEventHandlerWrite(&mtsIntuitiveResearchKitConsole::ErrorEventHandler, this, "Error");
         teleop->InterfaceRequired->AddEventHandlerWrite(&mtsIntuitiveResearchKitConsole::WarningEventHandler, this, "Warning");
         teleop->InterfaceRequired->AddEventHandlerWrite(&mtsIntuitiveResearchKitConsole::StatusEventHandler, this, "Status");
@@ -1494,6 +1499,18 @@ void mtsIntuitiveResearchKitConsole::SetScale(const double & scale)
         iterTeleopPSM->second->SetScale(scale);
     }
     ConfigurationEvents.Scale(scale);
+}
+void mtsIntuitiveResearchKitConsole::SetDelay(const double & delay)
+{
+  //std::cout << "Inside mtsIntuitiveResearchKitConsole::SetDelay: " << delay << std::endl;
+
+  const TeleopPSMList::iterator endTeleopPSM = mTeleopsPSM.end();
+  for (TeleopPSMList::iterator iterTeleopPSM = mTeleopsPSM.begin();
+       iterTeleopPSM != endTeleopPSM;
+       ++iterTeleopPSM) {
+      iterTeleopPSM->second->SetDelay(delay);
+  }
+  ConfigurationEvents.Delay(delay);
 }
 
 void mtsIntuitiveResearchKitConsole::ClutchEventHandler(const prmEventButton & button)

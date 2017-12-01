@@ -127,6 +127,7 @@ void mtsTeleOperationPSM::Configure(const std::string & CMN_UNUSED(filename))
                                        this);
 
     mScale = 0.2;
+    mDelay = 0.0;
     mIsClutched = false;
 
     mRotationLocked = false;
@@ -140,6 +141,7 @@ void mtsTeleOperationPSM::Configure(const std::string & CMN_UNUSED(filename))
     mConfigurationStateTable->SetAutomaticAdvance(false);
     this->AddStateTable(mConfigurationStateTable);
     mConfigurationStateTable->AddData(mScale, "Scale");
+    mConfigurationStateTable->AddData(mDelay, "Delay");
     mConfigurationStateTable->AddData(mRegistrationRotation, "RegistrationRotation");
     mConfigurationStateTable->AddData(mRotationLocked, "RotationLocked");
     mConfigurationStateTable->AddData(mTranslationLocked, "TranslationLocked");
@@ -171,6 +173,7 @@ void mtsTeleOperationPSM::Configure(const std::string & CMN_UNUSED(filename))
         interfaceRequired->AddFunction("SetRobotControlState", mPSM->SetRobotControlState);
         interfaceRequired->AddEventHandlerWrite(&mtsTeleOperationPSM::PSMErrorEventHandler,
                                                 this, "Error");
+        interfaceRequired->AddFunction("SetDelay", mPSM->SetDelay);
     }
 
     // footpedal events
@@ -189,6 +192,8 @@ void mtsTeleOperationPSM::Configure(const std::string & CMN_UNUSED(filename))
                                            "SetDesiredState", std::string("DISABLED"));
         interfaceProvided->AddCommandWrite(&mtsTeleOperationPSM::SetScale, this,
                                            "SetScale", 0.5);
+        interfaceProvided->AddCommandWrite(&mtsTeleOperationPSM::SetDelay, this,
+                                           "SetDelay", 0.0);
         interfaceProvided->AddCommandWrite(&mtsTeleOperationPSM::SetRegistrationRotation, this,
                                            "SetRegistrationRotation", vctMatRot3());
         interfaceProvided->AddCommandWrite(&mtsTeleOperationPSM::LockRotation, this,
@@ -198,6 +203,9 @@ void mtsTeleOperationPSM::Configure(const std::string & CMN_UNUSED(filename))
         interfaceProvided->AddCommandReadState(*(mConfigurationStateTable),
                                                mScale,
                                                "GetScale");
+        interfaceProvided->AddCommandReadState(*(mConfigurationStateTable),
+                                               mDelay,
+                                               "GetDelay");
         interfaceProvided->AddCommandReadState(*(mConfigurationStateTable),
                                                mRegistrationRotation,
                                                "GetRegistrationRotation");
@@ -225,6 +233,8 @@ void mtsTeleOperationPSM::Configure(const std::string & CMN_UNUSED(filename))
         // configuration
         interfaceProvided->AddEventWrite(ConfigurationEvents.Scale,
                                          "Scale", 0.5);
+        interfaceProvided->AddEventWrite(ConfigurationEvents.Delay,
+                                         "Delay", 0.0);
         interfaceProvided->AddEventWrite(ConfigurationEvents.RotationLocked,
                                          "RotationLocked", false);
         interfaceProvided->AddEventWrite(ConfigurationEvents.TranslationLocked,
@@ -323,6 +333,18 @@ void mtsTeleOperationPSM::SetScale(const double & scale)
     mScale = scale;
     mConfigurationStateTable->Advance();
     ConfigurationEvents.Scale(mScale);
+}
+
+void mtsTeleOperationPSM::SetDelay(const double & delay)
+{
+ // std::cout << "Inside mtsTeleOperationPSM::SetDelay: " << delay << std::endl;
+
+  mConfigurationStateTable->Start();
+  mDelay = delay;
+  mConfigurationStateTable->Advance();
+  ConfigurationEvents.Delay(mDelay);
+
+  mPSM->SetDelay(mDelay);
 }
 
 void mtsTeleOperationPSM::SetRegistrationRotation(const vctMatRot3 & rotation)

@@ -27,6 +27,7 @@ http://www.cisst.org/cisst/license.txt.
 #include <cisstParameterTypes/prmEventButton.h>
 #include <sawIntuitiveResearchKit/mtsIntuitiveResearchKitPSM.h>
 
+
 CMN_IMPLEMENT_SERVICES_DERIVED_ONEARG(mtsIntuitiveResearchKitPSM, mtsTaskPeriodic, mtsTaskPeriodicConstructorArg);
 
 mtsIntuitiveResearchKitPSM::mtsIntuitiveResearchKitPSM(const std::string & componentName, const double periodInSeconds):
@@ -70,6 +71,8 @@ robManipulator::Errno mtsIntuitiveResearchKitPSM::InverseKinematics(vctDoubleVec
 
 void mtsIntuitiveResearchKitPSM::Init(void)
 {
+    mDelay = 0;
+
     // main initialization from base type
     mtsIntuitiveResearchKitArm::Init();
 
@@ -104,6 +107,7 @@ void mtsIntuitiveResearchKitPSM::Init(void)
     CMN_ASSERT(RobotInterface);
     RobotInterface->AddEventWrite(ClutchEvents.ManipClutch, "ManipClutch", prmEventButton());
     RobotInterface->AddCommandWrite(&mtsIntuitiveResearchKitPSM::SetJawPosition, this, "SetJawPosition");
+    RobotInterface->AddCommandWrite(&mtsIntuitiveResearchKitPSM::SetDelay, this, "SetDelay");
     RobotInterface->AddCommandWrite(&mtsIntuitiveResearchKitPSM::SetToolPresent, this, "SetToolPresent");
 
     CMN_ASSERT(IOInterface);
@@ -875,10 +879,34 @@ void mtsIntuitiveResearchKitPSM::RunConstraintControllerCartesian(void)
 
 void mtsIntuitiveResearchKitPSM::SetPositionCartesian(const prmPositionCartesianSet & newPosition)
 {
+
     if ((RobotState == mtsIntuitiveResearchKitArmTypes::DVRK_POSITION_CARTESIAN)
         || (RobotState == mtsIntuitiveResearchKitArmTypes::DVRK_CONSTRAINT_CONTROLLER_CARTESIAN)) {
-        CartesianSetParam = newPosition;
-        IsGoalSet = true;
+
+        if(m_PositionCoordinates_buffer.empty() || mDelay == 0.0){
+           CartesianSetParam = newPosition;
+            IsGoalSet = true;
+        }
+        if(mDelay != 0.0){
+          m_PositionCoordinates_buffer.push_back(newPosition);
+          m_Position_TimeStamps_buffer.push_back(ros::Time::now());
+
+          while(ros::Time::now() - m_Position_TimeStamps_buffer.front() > ros::Duration(mDelay/1000.0)){
+              //std::cout << "Added Delay   : " << ros::Time::now() - m_Position_TimeStamps_buffer.front() << std::endl;
+              CartesianSetParam = m_PositionCoordinates_buffer.front();
+              IsGoalSet = true;
+
+              //Pop the front from timestamps and buffer :D
+              m_Position_TimeStamps_buffer.pop_front();
+              m_PositionCoordinates_buffer.pop_front();
+
+              if(m_PositionCoordinates_buffer.empty()){
+                break;
+              }
+
+            }
+         }
+
     } else {
         CMN_LOG_CLASS_RUN_WARNING << GetName() << ": SetPositionCartesian: PSM not ready" << std::endl;
     }
@@ -890,8 +918,34 @@ void mtsIntuitiveResearchKitPSM::SetJawPosition(const double & jawPosition)
     switch (RobotState) {
     case mtsIntuitiveResearchKitArmTypes::DVRK_POSITION_CARTESIAN:
     case mtsIntuitiveResearchKitArmTypes::DVRK_CONSTRAINT_CONTROLLER_CARTESIAN:
-        JointSet[6] = jawPosition;
-        IsGoalSet = true;
+
+        if(m_Jaw_buffer.empty() || mDelay == 0.0){
+            JointSet[6] = jawPosition;
+            IsGoalSet = true;
+        }
+        if(mDelay != 0.0){
+          m_Jaw_buffer.push_back(jawPosition);
+          m_Jaw_TimeStamps_buffer.push_back(ros::Time::now());
+
+          while(ros::Time::now() - m_Jaw_TimeStamps_buffer.front() > ros::Duration(mDelay/1000.0)){
+              //std::cout << "Added Delay   : " << ros::Time::now() - m_Jaw_TimeStamps_buffer.front() << std::endl;
+              JointSet[6] = m_Jaw_buffer.front();
+              IsGoalSet = true;
+
+              //Pop the front from timestamps and buffer :D
+              m_Jaw_TimeStamps_buffer.pop_front();
+              m_Jaw_buffer.pop_front();
+
+              if(m_Jaw_buffer.empty()){
+                break;
+              }
+
+            }
+        }
+
+
+        //JointSet[6] = jawPosition;
+        //IsGoalSet = true;
         break;
     case mtsIntuitiveResearchKitArmTypes::DVRK_POSITION_GOAL_CARTESIAN:
         JointTrajectory.Start.Assign(JointGetDesired, NumberOfJoints());
@@ -909,6 +963,16 @@ void mtsIntuitiveResearchKitPSM::SetJawPosition(const double & jawPosition)
         CMN_LOG_CLASS_RUN_WARNING << GetName() << ": SetJawPosition: PSM not ready" << std::endl;
         break;
     }
+}
+
+void mtsIntuitiveResearchKitPSM::SetDelay(const double & delay){
+  //std::cout << "Inside mtsIntuitiveResearchKitPSM::SetDelay " << delay << std::endl;
+  mDelay = delay;
+
+  m_PositionCoordinates_buffer.erase( m_PositionCoordinates_buffer.begin(),  m_PositionCoordinates_buffer.end());
+  m_Position_TimeStamps_buffer.erase( m_Position_TimeStamps_buffer.begin(),  m_Position_TimeStamps_buffer.end());
+  m_Jaw_TimeStamps_buffer.erase(m_Jaw_TimeStamps_buffer.begin(), m_Jaw_TimeStamps_buffer.end());
+  m_Jaw_buffer.erase(m_Jaw_buffer.begin(), m_Jaw_buffer.end());
 }
 
 void mtsIntuitiveResearchKitPSM::CouplingEventHandler(const prmActuatorJointCoupling & coupling)

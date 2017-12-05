@@ -15,11 +15,15 @@ To run DVRK:
 rosrun dvrk_robot dvrk_console_json -j ~/catkin_ws/src/cisst-saw/sawIntuitiveResearchKit/share/ucsd-dVRK/console-MTMR-PSM1-MTML-PSM2-Teleop.json -i ~/catkin_ws/src/cisst-saw/sawIntuitiveResearchKit/share/ros-io-PSM2.json -i ~/catkin_ws/src/cisst-saw/sawIntuitiveResearchKit/share/ros-io-PSM1.json -i ~/catkin_ws/src/cisst-saw/sawIntuitiveResearchKit/share/ros-io-MTML.json -i ~/catkin_ws/src/cisst-saw/sawIntuitiveResearchKit/share/ros-io-MTMR.json
 
 To have cameras running by themselves publishing to ROS:
-~/catkin_ws/devel/lib/ourStereoVision/testCameraCaptureDelegate
+~/catkin_ws/devel/lib/StereoVision/testCameraCaptureDelegate
 
 From there, use image_viewer to display the images. Like so:
 rosrun image_view image_view image:=/stereo/left/image_raw
 rosrun image_view image_view image:=/stereo/right/image_raw
+
+or if delay is running:
+rosrun image_view image_view image:=/stereo/left_delay/image_raw
+rosrun image_view image_view image:=/stereo/right_delay/image_raw
 
 To run stereo calibration:
 1) Run stereo calibration pacakge

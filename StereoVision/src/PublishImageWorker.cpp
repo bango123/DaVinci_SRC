@@ -1,7 +1,4 @@
-#include <cisstOurStereoVision/include/DeckLinkCaptureWorker.h>
-
-//#include <opencv2/core/cuda.hpp>
-//#include <opencv2/cudaimgproc.hpp>
+#include <StereoVision/PublishImageWorker.h>
 
 #include <opencv2/imgproc/imgproc.hpp>
 #include <cv_bridge/cv_bridge.h>
@@ -26,7 +23,7 @@ void handler(int sig) {
 }
 
 
-DeckLinkCaptureWorker::DeckLinkCaptureWorker( bool isLeftCamera, ros::NodeHandle nh) :
+PublishImageWorker::PublishImageWorker( bool isLeftCamera, ros::NodeHandle nh) :
     m_isLeftCamera(isLeftCamera),
     nh_(nh),
     cinfo_(nh_),
@@ -46,14 +43,14 @@ DeckLinkCaptureWorker::DeckLinkCaptureWorker( bool isLeftCamera, ros::NodeHandle
 }
 
 
-void DeckLinkCaptureWorker::setFrame(const cv::Mat frame, const std_msgs::Header header){
+void PublishImageWorker::setFrame(const cv::Mat frame, const std_msgs::Header header){
   //mutex.lock();
   m_frame = frame.clone();
   m_header = header;
   //mutex.unlock();
 }
 
-void DeckLinkCaptureWorker::run() {
+void PublishImageWorker::run() {
 
 
   cv_bridge::CvImage out_msg;

@@ -1,16 +1,4 @@
-#include <cisstOurStereoVision/include/DeckLinkCaptureDelegate.h>
-#include<unistd.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <ctime>
-#include <iostream>
-#include <string.h>
-#include <boost/lexical_cast.hpp>
-
-#include <opencv2/core/core.hpp>
-#include <opencv2/imgproc/imgproc.hpp>
-#include <opencv2/highgui/highgui.hpp>
-
+#include <StereoVision/DeckLinkCaptureDelegate.h>
 #include <ros/ros.h>
 
 int main(int argc, char** argv)
@@ -32,6 +20,3 @@ int main(int argc, char** argv)
   ros::shutdown();
   return -1;
 }
-
-
-

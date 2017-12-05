@@ -1,6 +1,4 @@
-#include <cisstOurStereoVision/include/DeckLinkCaptureDelegate.h>
-#include <cisstOurStereoVision/DeckLinkAPI/DeckLinkAPI.h>
-#include <cisstOurStereoVision/include/DeckLinkCaptureWorker.h>
+#include <StereoVision/DeckLinkCaptureDelegate.h>
 
 #include <iostream>
 #include <ctime>
@@ -41,11 +39,11 @@ DeckLinkCaptureDelegate::DeckLinkCaptureDelegate(bool isLeftCamera):
    //Create worker class
    if(m_isLeftCamera){
       ros::NodeHandle nh("stereo/left");
-      workerThread = new DeckLinkCaptureWorker(m_isLeftCamera, nh);
+      workerThread = new PublishImageWorker(m_isLeftCamera, nh);
    }
    else{
       ros::NodeHandle nh("stereo/right");
-      workerThread = new DeckLinkCaptureWorker(m_isLeftCamera, nh);
+      workerThread = new PublishImageWorker(m_isLeftCamera, nh);
    }
 
    return;
@@ -82,21 +80,18 @@ HRESULT DeckLinkCaptureDelegate::VideoInputFrameArrived(IDeckLinkVideoInputFrame
     printf("--------- Left New Frame---------\n");
   }
   else{
-    //printf("---------Right New Frame---------\n");
+    printf("---------Right New Frame---------\n");
   }
 
+  //clock_t currentTime = clock();
+  std::cout << "Frame Rate: " << ( 1 )/(ros::Time::now() - m_timeOfLastFrame).toSec() << std::endl;
 
-  clock_t currentTime = clock();
-  std::cout << "Frame Rate: " << ( CLOCKS_PER_SEC )/(currentTime - m_timeOfLastFrame) << std::endl;
+  m_timeOfLastFrame = ros::Time::now();
 
-  m_timeOfLastFrame = clock();
+  std::cout << "Time Stamp: " << m_HeaderQueue.front().stamp << std::endl;
+  std::cout << "Sequence  : " << m_HeaderQueue.front().seq << std::endl;
+  std::cout << "Frame ID  : " << m_HeaderQueue.front().frame_id << std::endl;
 
-  //std::cout << "Frame Arrived at " << m_timeOfLastFrame/( CLOCKS_PER_SEC / 1000 ) <<std::endl;
-  if(m_isLeftCamera){
-    std::cout << "Time Stamp: " << m_HeaderQueue.front().stamp << std::endl;
-    std::cout << "Sequence  : " << m_HeaderQueue.front().seq << std::endl;
-    std::cout << "Frame ID  : " << m_HeaderQueue.front().frame_id << std::endl;
-  }
   if( !videoFrame){
     printf("Video Frame is Null\n");
     return E_FAIL;
@@ -105,19 +100,13 @@ HRESULT DeckLinkCaptureDelegate::VideoInputFrameArrived(IDeckLinkVideoInputFrame
   void*	frameBytes;
   videoFrame->GetBytes(&frameBytes);
 
-//  std::cout << "Time to allocate frameBytes (mS): " << (clock()- m_timeOfLastFrame)/( CLOCKS_PER_SEC / 1000 ) << std::endl;
-
   mutex.lock();
   m_FrameQueue.push_back(cv::Mat(videoFrame->GetHeight(), videoFrame->GetWidth(), CV_8UC2, frameBytes, videoFrame->GetRowBytes()));
   mutex.unlock();
 
-//  std::cout << "Time to save in circular Buffer (mS): " << (clock()- m_timeOfLastFrame)/( CLOCKS_PER_SEC / 1000 ) << std::endl;
-
   std::cout << "Size of buffer: " << m_FrameQueue.size() << std::endl;
 
   if( !workerThread->isRunning() ){
-//    std::cout << "Passing Frame to Worker" << std::endl;
-
     workerThread->setFrame( m_FrameQueue.front(), m_HeaderQueue.front());
     workerThread->start();
 
@@ -132,7 +121,6 @@ HRESULT DeckLinkCaptureDelegate::VideoInputFrameArrived(IDeckLinkVideoInputFrame
     m_HeaderQueue.erase(m_HeaderQueue.begin(), m_HeaderQueue.end());
   }
 
-//  std::cout << "Time to exit callback (mS): " << (clock()- m_timeOfLastFrame)/( CLOCKS_PER_SEC / 1000 ) << std::endl;
   return S_OK;
 }
 
@@ -247,7 +235,6 @@ int DeckLinkCaptureDelegate::setUpCallBack(void){
 
   return 1;
 }
-
 
 //Disconnects all the stuff!!!
 void DeckLinkCaptureDelegate::disconectDeckLink(void){

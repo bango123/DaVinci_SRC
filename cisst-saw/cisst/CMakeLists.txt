@@ -387,7 +387,7 @@ set (CISST_LIBRARIES_DEFAULT
      cisstParameterTypes
      cisstRobot
      #cisstStereoVision
-     cisstOurStereoVision
+     #cisstOurStereoVision
      )
 
 set (CISST_LIBRARIES_OPTIONAL

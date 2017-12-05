@@ -11,14 +11,14 @@
 #include <camera_info_manager/camera_info_manager.h>
 
 
-class DeckLinkCaptureWorker : public QThread
+class PublishImageWorker : public QThread
 {
   Q_OBJECT
 
 public:
     //delay here is the amount of delay being added before publishing in ms.
-    DeckLinkCaptureWorker( bool isLeftCamera, ros::NodeHandle nh);
-    ~DeckLinkCaptureWorker(){}
+    PublishImageWorker( bool isLeftCamera, ros::NodeHandle nh);
+    ~PublishImageWorker(){}
 
     void setFrame(const cv::Mat frame, const std_msgs::Header header);
 

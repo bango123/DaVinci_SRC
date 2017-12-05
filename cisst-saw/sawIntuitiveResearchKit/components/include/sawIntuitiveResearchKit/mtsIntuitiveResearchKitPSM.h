@@ -45,6 +45,7 @@ public:
 
 protected:
     double mDelay;
+    //bool mIsClutched      = false;
 
     boost::circular_buffer<prmPositionCartesianSet> m_PositionCoordinates_buffer  = boost::circular_buffer<prmPositionCartesianSet>(1000);
     boost::circular_buffer<ros::Time> m_Position_TimeStamps_buffer                = boost::circular_buffer<ros::Time>(1000);

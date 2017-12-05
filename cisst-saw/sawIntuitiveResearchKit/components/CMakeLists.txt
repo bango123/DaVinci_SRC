@@ -150,7 +150,8 @@ if (cisst_FOUND)
     target_link_libraries (sawIntuitiveResearchKit
                            ${sawRobotIO1394_LIBRARIES}
                            ${sawControllers_LIBRARIES}
-                           ${sawConstraintController_LIBRARIES})
+                           ${sawConstraintController_LIBRARIES}
+                           ${catkin_LIBRARIES})
 
     # add Qt code
     add_subdirectory (code/Qt)

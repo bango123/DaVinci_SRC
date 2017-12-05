@@ -1,8 +1,8 @@
 #ifndef DECKLINKCAPTUREDELEGATE_H
 #define DECKLINKCAPTUREDELEGATE_H
 
-#include <cisstOurStereoVision/DeckLinkAPI/DeckLinkAPI.h>
-#include <cisstOurStereoVision/include/DeckLinkCaptureWorker.h>
+#include "../../DeckLinkAPI/DeckLinkAPI.h"
+#include <StereoVision/PublishImageWorker.h>
 
 #include <opencv2/core/core.hpp>
 #include <QMutex>
@@ -10,6 +10,7 @@
 #include <boost/circular_buffer.hpp>
 #include <boost/shared_array.hpp>
 #include <sensor_msgs/image_encodings.h>
+#include <ros/ros.h>
 
 
 
@@ -26,7 +27,8 @@ public:
   bool                      m_isLeftCamera;
 
   bool                      m_streamRunning           = false;
-  clock_t                   m_timeOfLastFrame;
+  //clock_t                   m_timeOfLastFrame;
+  ros::Time                 m_timeOfLastFrame;
   int                       m_FrameCount              = 0;
 
   virtual HRESULT STDMETHODCALLTYPE QueryInterface(REFIID iid, LPVOID *ppv) { return E_NOINTERFACE; }
@@ -44,7 +46,7 @@ private:
   int connectToDeckLink(void);
   int setUpCallBack(void);
 
-  DeckLinkCaptureWorker*    workerThread;
+  PublishImageWorker*    workerThread;
 
   int32_t                   m_refCount;
   //"DeckLink 4K Extreme" for left camera

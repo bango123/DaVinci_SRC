@@ -675,6 +675,7 @@ void mtsIntuitiveResearchKitMTM::SetRobotControlState(const std::string & state)
     } else if (state == "Gravity") {
         SetState(mtsIntuitiveResearchKitArmTypes::DVRK_GRAVITY_COMPENSATION);
     } else if (state == "Clutch") {
+        //std::cout << "Do I ever run clutch in MTM??" << std::endl;
         SetState(mtsIntuitiveResearchKitArmTypes::DVRK_CLUTCH);
     } else {
         mtsIntuitiveResearchKitArmTypes::RobotStateType stateEnum;

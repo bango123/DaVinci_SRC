@@ -1538,13 +1538,21 @@ void mtsIntuitiveResearchKitConsole::CameraEventHandler(const prmEventButton & b
 
 void mtsIntuitiveResearchKitConsole::OperatorPresentEventHandler(const prmEventButton & button)
 {
-    if (button.Type() == prmEventButton::PRESSED) {
-        mOperatorPresent = true;
+   if (button.Type() == prmEventButton::PRESSED) {
+        mOperatorPresent = !mOperatorPresent;
+   }
+   if(mOperatorPresent){
         MessageEvents.Status(this->GetName() + ": operator present");
-    } else {
-        mOperatorPresent = false;
+   }else{
         MessageEvents.Status(this->GetName() + ": operator not present");
-    }
+   }
+//    if (button.Type() == prmEventButton::PRESSED) {
+//        mOperatorPresent = true;
+//        MessageEvents.Status(this->GetName() + ": operator present");
+//    } else {
+//        mOperatorPresent = false;
+//        MessageEvents.Status(this->GetName() + ": operator not present");
+//    }
     UpdateTeleopState();
     ConsoleEvents.OperatorPresent(button);
 }

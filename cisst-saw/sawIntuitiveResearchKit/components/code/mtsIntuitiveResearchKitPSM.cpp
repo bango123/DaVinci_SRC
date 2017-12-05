@@ -26,6 +26,7 @@ http://www.cisst.org/cisst/license.txt.
 #include <cisstMultiTask/mtsInterfaceRequired.h>
 #include <cisstParameterTypes/prmEventButton.h>
 #include <sawIntuitiveResearchKit/mtsIntuitiveResearchKitPSM.h>
+#include <ros/ros.h>
 
 
 CMN_IMPLEMENT_SERVICES_DERIVED_ONEARG(mtsIntuitiveResearchKitPSM, mtsTaskPeriodic, mtsTaskPeriodicConstructorArg);
@@ -1051,6 +1052,8 @@ void mtsIntuitiveResearchKitPSM::EventHandlerManipClutch(const prmEventButton & 
 {
     // Pass events
     ClutchEvents.ManipClutch(button);
+
+    //mIsClutched = !mIsClutched;
 
     // Start manual mode but save the previous state
     if (button.Type() == prmEventButton::PRESSED) {

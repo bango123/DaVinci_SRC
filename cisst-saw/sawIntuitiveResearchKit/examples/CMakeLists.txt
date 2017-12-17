@@ -78,7 +78,7 @@ if (cisst_FOUND_AS_REQUIRED)
       # link against cisst libraries (and dependencies)
       cisst_target_link_libraries (sawIntuitiveResearchKitQtTeleOperation ${REQUIRED_CISST_LIBRARIES})
 
-      # main program used to configure Haptics
+#      # main program used to configure Haptics
       add_executable (sawIntuitiveResearchKitQtHaptics mainQtHaptics.cpp)
       set_property (TARGET sawIntuitiveResearchKitQtHaptics PROPERTY FOLDER "sawIntuitiveResearchKit")
       # link against non cisst libraries and cisst components

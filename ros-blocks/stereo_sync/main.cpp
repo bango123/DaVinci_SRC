@@ -43,8 +43,8 @@ int main(int argc, char **argv)
       slop =  boost::lexical_cast<int>(argv[i+1]);
     }
   }
-  std::cout<< "Set buffer size to: " << sizeOfBuffer << std::endl;
-  std::cout<< "Slop set to       : " << slop << std::endl;
+  std::cout<< "Camera Sync: Set buffer size to: " << sizeOfBuffer << std::endl;
+  std::cout<< "Camera Sync: Slop set to       : " << slop << std::endl;
 
 
   //Initialize ros

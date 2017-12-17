@@ -31,7 +31,7 @@ set (REQUIRED_CISST_LIBRARIES
      cisstRobot
      cisstNumerical)
 
-find_package (cisst 1.0.8 REQUIRED ${REQUIRED_CISST_LIBRARIES})
+ find_package (cisst 1.0.8 REQUIRED ${REQUIRED_CISST_LIBRARIES})
 
 if (cisst_FOUND)
 
@@ -58,12 +58,12 @@ if (cisst_FOUND)
     include_directories (${sawRobotIO1394_INCLUDE_DIR}
                          ${sawControllers_INCLUDE_DIR}
                          ${sawConstraintController_INCLUDE_DIR}
-                         ${catkin_INCLUDE_DIR})
+                         ${catkin_INCLUDE_DIRS})
 
     link_directories (${sawRobotIO1394_LIBRARY_DIR}
                       ${sawControllers_LIBRARY_DIR}
                       ${sawConstraintController_LIBRARY_DIR}
-                      ${catkin_LIBRARY_DIR})
+                      ${catkin_LIBRARY_DIRS})
 
     # catkin/ROS paths
     cisst_is_catkin_build (sawIntuitiveResearchKit_IS_CATKIN_BUILT)
@@ -79,6 +79,7 @@ if (cisst_FOUND)
     set (sawIntuitiveResearchKit_INCLUDE_DIR
          "${sawIntuitiveResearchKit_SOURCE_DIR}/include"
          "${sawIntuitiveResearchKit_BINARY_DIR}/include")
+
     set (sawIntuitiveResearchKit_LIBRARY_DIR "${LIBRARY_OUTPUT_PATH}")
     set (sawIntuitiveResearchKit_LIBRARIES sawIntuitiveResearchKit)
 
@@ -139,7 +140,7 @@ if (cisst_FOUND)
          code/mtsVFFollowJacobian.cpp
         )
 
-    add_library (sawIntuitiveResearchKit
+    add_library (sawIntuitiveResearchKit SHARED
                  ${HEADER_FILES} ${SOURCE_FILES}
                  ${sawIntuitiveResearchKit_CISST_DG_SRCS}
                  ${sawIntuitiveResearchKit_CISST_DG_HDRS})
@@ -152,6 +153,8 @@ if (cisst_FOUND)
                            ${sawControllers_LIBRARIES}
                            ${sawConstraintController_LIBRARIES}
                            ${catkin_LIBRARIES})
+
+     #message(WARNING "${catkin_LIBRARIES}")
 
     # add Qt code
     add_subdirectory (code/Qt)

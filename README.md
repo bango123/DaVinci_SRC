@@ -9,6 +9,10 @@ https://github.com/jhu-cisst/cisst/wiki/Compiling-cisst-and-SAW-with-CMake#13-bu
 
 3) The video capture cards in the computer are from a Black Magic. We will be using the Decklink SDK to configure the video. So please install this dependency on the computer before buliding
 
+To run the most up-to date stuff use launchfile:
+    roscore
+    roslaunch dvrk_robot dvrk_console.launch
+    roslaunch stereo_vision stereo_vision_delay.launch
 
 
 To run DVRK:

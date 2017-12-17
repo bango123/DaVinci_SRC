@@ -1,4 +1,4 @@
-#include <StereoVision/DeckLinkCaptureDelegate.h>
+#include <stereo_vision/DeckLinkCaptureDelegate.h>
 
 #include <iostream>
 #include <ctime>

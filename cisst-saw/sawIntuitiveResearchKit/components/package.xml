@@ -17,6 +17,7 @@
   <build_depend>saw_constraint_controller</build_depend>
   <build_depend>saw_robot_io_1394</build_depend>
 
+
   <build_depend>geometry_msgs</build_depend>
   <build_depend>roscpp</build_depend>
   <build_depend>rospy</build_depend>
@@ -37,6 +38,8 @@
   <run_depend>saw_controllers</run_depend>
   <run_depend>saw_constraint_controller</run_depend>
   <run_depend>saw_robot_io_1394</run_depend>
+
+
 
   <export>
     <build_type>catkin</build_type>

@@ -35,9 +35,15 @@ void dvrk::add_topics_console(mtsROSBridge & bridge,
     bridge.AddSubscriberToCommandWrite<double, std_msgs::Float32>
         ("Console", "SetScale",
          ros_namespace + "/teleop/set_scale");
+
+
     bridge.AddPublisherFromEventWrite<double, std_msgs::Float32>
         ("Console", "Scale",
          ros_namespace + "/teleop/scale");
+    bridge.AddPublisherFromEventWrite<double, std_msgs::Float32>
+        ("Console", "Delay",
+         ros_namespace + "/teleop/delay");
+
 }
 
 void dvrk::connect_bridge_console(mtsROSBridge & bridge,

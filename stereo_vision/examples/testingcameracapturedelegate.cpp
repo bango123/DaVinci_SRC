@@ -1,4 +1,4 @@
-#include <StereoVision/DeckLinkCaptureDelegate.h>
+#include <stereo_vision/DeckLinkCaptureDelegate.h>
 #include <ros/ros.h>
 
 int main(int argc, char** argv)

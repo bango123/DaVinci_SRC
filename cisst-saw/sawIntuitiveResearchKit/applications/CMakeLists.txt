@@ -45,6 +45,7 @@ if (cisst_FOUND_AS_REQUIRED)
   find_package (sawConstraintController 1.1.0 REQUIRED)
   find_package (sawIntuitiveResearchKit 1.4.0 REQUIRED)
   find_package (sawTextToSpeech REQUIRED)
+ # find_package (Booost                        REQUIRED)
 
   if (sawRobotIO1394_FOUND AND sawControllers_FOUND
       AND sawIntuitiveResearchKit_FOUND AND sawTextToSpeech_FOUND
@@ -89,21 +90,22 @@ if (cisst_FOUND_AS_REQUIRED)
       cisst_target_link_libraries (sawIntuitiveResearchKitQtPID ${REQUIRED_CISST_LIBRARIES})
 
       # main program used to test a single arm
+
       add_executable (sawIntuitiveResearchKitQtArm mainQtArm.cpp)
       set_property (TARGET sawIntuitiveResearchKitQtArm PROPERTY FOLDER "sawIntuitiveResearchKit")
-      # link against non cisst libraries and cisst components
+#      # link against non cisst libraries and cisst components
       target_link_libraries (sawIntuitiveResearchKitQtArm
                              ${sawIntuitiveResearchKit_LIBRARIES}
                              ${sawRobotIO1394_LIBRARIES}
                              ${sawControllers_LIBRARIES}
                              ${sawTextToSpeech_LIBRARIES})
-      # link against cisst libraries (and dependencies)
+#      # link against cisst libraries (and dependencies)
       cisst_target_link_libraries (sawIntuitiveResearchKitQtArm ${REQUIRED_CISST_LIBRARIES})
 
       # applications using JSON
       if (CISST_HAS_JSON)
 
-        # main program used to configure Console
+#        # main program used to configure Console
         add_executable (sawIntuitiveResearchKitQtConsoleJSON mainQtConsoleJSON.cpp)
         set_property (TARGET sawIntuitiveResearchKitQtConsoleJSON PROPERTY FOLDER "sawIntuitiveResearchKit")
         # link against non cisst libraries and cisst components

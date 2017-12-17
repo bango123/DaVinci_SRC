@@ -1,4 +1,4 @@
-#include <StereoVision/PublishImageWorker.h>
+#include <stereo_vision/PublishImageWorker.h>
 
 #include <opencv2/imgproc/imgproc.hpp>
 #include <cv_bridge/cv_bridge.h>

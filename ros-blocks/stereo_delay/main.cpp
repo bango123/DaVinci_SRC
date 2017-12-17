@@ -7,10 +7,11 @@
 #include <camera_info_manager/camera_info_manager.h>
 
 //Delay in ms!!
-float delay = 0;
+float delay_s  = 0;
+int   delay_ms = 0;
 
 //buffered image messages:
-int sizeOfBuffer = 20;
+int sizeOfBuffer = 35;
 boost::circular_buffer<sensor_msgs::Image> messageBuffer_L = boost::circular_buffer<sensor_msgs::Image> (sizeOfBuffer);
 boost::circular_buffer<ros::Time>          timeRecieved_L  = boost::circular_buffer<ros::Time>          (sizeOfBuffer);
 
@@ -33,28 +34,27 @@ void imageCallback_R(const sensor_msgs::ImageConstPtr& msg)
 
 int main(int argc, char **argv)
 {
-  //Command line inputs for this program
-  for(int i = 0; i < argc; i ++){
-    if( (0 == strcmp(argv[i], "-d")) && i < argc-1 ){
-      delay =  boost::lexical_cast<float>(argv[i+1]);
-    }
-    if( (0 == strcmp(argv[i], "-b")) && i < argc-1 ){
-      sizeOfBuffer =  boost::lexical_cast<int>(argv[i+1]);
-    }
-  }
-  std::cout<< "Delay set to (mS) : " << delay       << std::endl;
-  delay = delay/1000.0;
-  std::cout<< "Set buffer size to: " << sizeOfBuffer << std::endl;
-
 
   //Initialize ros
   ros::init(argc, argv, "delay_publisher");
   ros::NodeHandle nh;
 
+  //Iniatlize delay
+  if(!nh.hasParam("delay")){
+    nh.setParam("delay", delay_ms);
+  }
+  else{
+    nh.getParam("delay", delay_ms);
+  }
+  delay_s = delay_ms/1000.0;
+
+  std::cout<< "Camera Delay: Delay set to (mS) : " << delay_ms     << std::endl;
+  std::cout<< "Set buffer size to: " << sizeOfBuffer << std::endl;
+
   //Set up to subscribe to the stereo camera feed
   image_transport::ImageTransport it(nh);
-  image_transport::Subscriber sub_L = it.subscribe("stereo/left/image_raw"  , 1, imageCallback_L);
-  image_transport::Subscriber sub_R = it.subscribe("stereo/right/image_raw" , 1, imageCallback_R);
+  image_transport::Subscriber sub_L = it.subscribe("stereo/left_sync/image_raw"  , 1, imageCallback_L);
+  image_transport::Subscriber sub_R = it.subscribe("stereo/right_sync/image_raw" , 1, imageCallback_R);
 
   //set up publisher:
   image_transport::Publisher pub_L = it.advertise("stereo/left_delay/image_raw" , 1);
@@ -67,8 +67,11 @@ int main(int argc, char **argv)
   {
     ros::spinOnce();
 
+    nh.getParam("delay", delay_ms);
+    delay_s = delay_ms/1000.0;
+
     if(!messageBuffer_L.empty()){
-      if(ros::Time::now() - timeRecieved_L.front() > ros::Duration(delay)){
+      if(ros::Time::now() - timeRecieved_L.front() > ros::Duration(delay_s)){
         pub_L.publish(messageBuffer_L.front());
         std::cout << "----Left Frame ----" << std::endl;
         std::cout << "Frame ID                  : " << messageBuffer_L.front().header.seq                      << std::endl;
@@ -82,7 +85,7 @@ int main(int argc, char **argv)
     }
 
     if(!messageBuffer_R.empty()){
-      if(ros::Time::now() - timeRecieved_R.front() > ros::Duration(delay)){
+      if(ros::Time::now() - timeRecieved_R.front() > ros::Duration(delay_s)){
         pub_R.publish(messageBuffer_R.front());
         std::cout << "----Right Frame----" << std::endl;
         std::cout << "Frame ID                  : " << messageBuffer_R.front().header.seq                      << std::endl;
@@ -97,6 +100,9 @@ int main(int argc, char **argv)
 
 
   }
+
+  //Clean up the parameters
+  nh.deleteParam("delay");
 
   return 0;
 }

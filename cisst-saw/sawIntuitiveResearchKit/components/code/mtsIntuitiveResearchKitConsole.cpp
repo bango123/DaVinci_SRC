@@ -41,6 +41,9 @@ http://www.cisst.org/cisst/license.txt.
 
 #include <json/json.h>
 
+#include <ros/ros.h>
+
+
 CMN_IMPLEMENT_SERVICES(mtsIntuitiveResearchKitConsole);
 
 
@@ -465,10 +468,12 @@ mtsIntuitiveResearchKitConsole::mtsIntuitiveResearchKitConsole(const std::string
                                            "SetScale", 0.5);
         interfaceProvided->AddCommandWrite(&mtsIntuitiveResearchKitConsole::SetDelay, this,
                                            "SetDelay", 0.0);
+
         interfaceProvided->AddEventWrite(ConfigurationEvents.Scale,
                                          "Scale", 0.5);
         interfaceProvided->AddEventWrite(ConfigurationEvents.Delay,
-                                         "Delay", 0);
+                                         "Delay", 0.0);
+
         interfaceProvided->AddEventWrite(MessageEvents.Error, "Error", std::string(""));
         interfaceProvided->AddEventWrite(MessageEvents.Warning, "Warning", std::string(""));
         interfaceProvided->AddEventWrite(MessageEvents.Status, "Status", std::string(""));
@@ -707,6 +712,7 @@ void mtsIntuitiveResearchKitConsole::Startup(void)
     message.append(" / cisst ");
     message.append(CISST_VERSION);
     MessageEvents.Status(message);
+
 }
 
 void mtsIntuitiveResearchKitConsole::Run(void)
@@ -718,6 +724,7 @@ void mtsIntuitiveResearchKitConsole::Run(void)
 void mtsIntuitiveResearchKitConsole::Cleanup(void)
 {
     CMN_LOG_CLASS_INIT_VERBOSE << "Cleanup" << std::endl;
+
 }
 
 bool mtsIntuitiveResearchKitConsole::AddArm(Arm * newArm)
@@ -1503,6 +1510,17 @@ void mtsIntuitiveResearchKitConsole::SetScale(const double & scale)
 void mtsIntuitiveResearchKitConsole::SetDelay(const double & delay)
 {
   //std::cout << "Inside mtsIntuitiveResearchKitConsole::SetDelay: " << delay << std::endl;
+
+//  ros::NodeHandle nh;
+//  nh.setParam("delay", int(delay/1000.0));
+
+//  if(nh.hasParam("delay")){
+//    std::cout << "here" <<std::endl;
+//  }
+//  else{
+//    std::cout <<" not here" << std::endl;
+//  }
+
 
   const TeleopPSMList::iterator endTeleopPSM = mTeleopsPSM.end();
   for (TeleopPSMList::iterator iterTeleopPSM = mTeleopsPSM.begin();

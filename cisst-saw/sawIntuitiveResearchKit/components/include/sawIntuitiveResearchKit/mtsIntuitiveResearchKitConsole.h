@@ -26,6 +26,9 @@ http://www.cisst.org/cisst/license.txt.
 
 #include <sawIntuitiveResearchKit/sawIntuitiveResearchKitExport.h>
 
+#include <ros/ros.h>
+
+
 // for ROS console
 namespace dvrk {
     class console;
@@ -220,6 +223,7 @@ public:
     bool Connect(void);
 
 protected:
+
     bool mConfigured;
     bool mTeleopEnabled;
     bool mTeleopPSMRunning;

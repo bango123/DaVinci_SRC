@@ -1,0 +1,10 @@
+<launch>
+
+    <node name="stereo_publisher"   pkg="stereo_vision"      type="stereo_publisher"                                    />
+    <node name="stereo_sync"        pkg="stereo_sync"        type="stereo_sync"                                         />
+    <node name="stereo_delay"       pkg="stereo_delay"       type="stereo_delay"                                        />
+
+    <node name="left_image_viewer"  pkg="image_view"         type="image_view"   args="image:=/stereo/left_delay/image_raw"   />
+    <node name="right_image_viewer" pkg="image_view"         type="image_view"   args="image:=/stereo/right_delay/image_raw"  />
+
+</launch>

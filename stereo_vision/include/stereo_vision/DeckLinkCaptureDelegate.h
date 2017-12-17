@@ -2,7 +2,7 @@
 #define DECKLINKCAPTUREDELEGATE_H
 
 #include "../../DeckLinkAPI/DeckLinkAPI.h"
-#include <StereoVision/PublishImageWorker.h>
+#include <stereo_vision/PublishImageWorker.h>
 
 #include <opencv2/core/core.hpp>
 #include <QMutex>

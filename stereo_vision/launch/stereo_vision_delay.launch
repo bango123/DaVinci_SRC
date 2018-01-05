@@ -4,7 +4,19 @@
     <node name="stereo_sync"        pkg="stereo_sync"        type="stereo_sync"                                         />
     <node name="stereo_delay"       pkg="stereo_delay"       type="stereo_delay"                                        />
 
-    <node name="left_image_viewer"  pkg="image_view"         type="image_view"   args="image:=/stereo/left_delay/image_raw"   />
-    <node name="right_image_viewer" pkg="image_view"         type="image_view"   args="image:=/stereo/right_delay/image_raw"  />
+    <node name="image_viewer"       pkg="stereo_viewer"      type="stereo_viewer_dvrk" />
 
+<!--
+    <node name="left_image_viewer"  pkg="stereo_viewer"         type="stereo_viewer_dvrk"   args="L"   />
+    <node name="right_image_viewer" pkg="stereo_viewer"         type="stereo_viewer_dvrk"   args="R"  />
+    -->
+<!--
+    <node name="left_image_viewer"  pkg="image_view"            type="image_view">
+        <remap from="image" to="stereo/master/left/image_raw" />
+        </node>
+
+    <node name="right_image_viewer"  pkg="image_view"            type="image_view">
+        <remap from="image" to="stereo/master/right/image_raw" />
+        </node>
+-->
 </launch>

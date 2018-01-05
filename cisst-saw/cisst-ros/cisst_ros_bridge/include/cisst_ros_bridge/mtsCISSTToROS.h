@@ -32,6 +32,7 @@ http://www.cisst.org/cisst/license.txt.
 #include <cisstParameterTypes/prmStateJoint.h>
 #include <cisstParameterTypes/prmPositionCartesianGet.h>
 #include <cisstParameterTypes/prmVelocityCartesianGet.h>
+#include <cisstParameterTypes/prmPositionCartesianSet.h>
 #include <cisstParameterTypes/prmForceCartesianGet.h>
 #include <cisstParameterTypes/prmEventButton.h>
 #include <cisstParameterTypes/prmFixtureGainCartesianSet.h>
@@ -56,6 +57,7 @@ http://www.cisst.org/cisst/license.txt.
 #include <cisst_msgs/vctDoubleVec.h>
 #include <cisst_msgs/prmFixtureGainCartesianSet.h>
 #include <cisst_msgs/BoolStamped.h>
+#include <cisst_msgs/FloatStamped.h>
 
 // helper functions
 template <typename _cisstFrame>
@@ -125,6 +127,7 @@ void mtsCISSTToROS(const prmPositionCartesianGet & cisstData, geometry_msgs::Tra
 void mtsCISSTToROS(const prmPositionCartesianGet & cisstData, geometry_msgs::TransformStamped & rosData);
 void mtsCISSTToROS(const prmPositionCartesianGet & cisstData, geometry_msgs::Pose & rosData);
 void mtsCISSTToROS(const prmPositionCartesianGet & cisstData, geometry_msgs::PoseStamped & rosData);
+void mtsCISSTToROS(const prmPositionCartesianSet & cisstData, geometry_msgs::PoseStamped & rosData);
 void mtsCISSTToROS(const vctFrm4x4 & cisstData, geometry_msgs::Pose & rosData);
 void mtsCISSTToROS(const mtsFrm4x4 & cisstData, geometry_msgs::Pose & rosData);
 void mtsCISSTToROS(const vctFrm3 & cisstData, geometry_msgs::Pose & rosData);
@@ -154,5 +157,7 @@ void mtsCISSTToROS(const prmPositionJointGet & cisstData, cisst_msgs::vctDoubleV
 void mtsCISSTToROS(const vctDoubleVec & cisstData, cisst_msgs::vctDoubleVec & rosData);
 void mtsCISSTToROS(const prmFixtureGainCartesianSet & cisstData,
                    cisst_msgs::prmFixtureGainCartesianSet & rosData);
+void mtsCISSTToROS(const double & cisstData, cisst_msgs::FloatStamped & rosData);
+
 
 #endif // _mtsCISSTToROS_h

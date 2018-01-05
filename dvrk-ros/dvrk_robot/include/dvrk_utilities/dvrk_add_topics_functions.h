@@ -154,6 +154,17 @@ namespace dvrk {
     void connect_bridge_io(const std::string & bridge_name,
                            const std::string & io_component_name,
                            const std::string & arm_name);
+
+    void add_topics_delaypsm(mtsROSBridge & bridge,
+                             const std::string & ros_namesapce,
+                             const std::string & delaypsm_name,
+                             const dvrk_topics_version::version version);
+
+    void connect_bridge_delaypsm(mtsROSBridge & bridge,
+                                 const std::string & delaypsm_name);
+    
+    void connect_bridge_delaypsm(const std::string & bridge_name,
+                                 const std::string & delaypsm_name);
 }
 
 #endif // _dvrk_add_topics_functions_h

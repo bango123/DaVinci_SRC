@@ -109,6 +109,7 @@ if (cisst_FOUND)
          "${sawIntuitiveResearchKit_SOURCE_DIR}/include/sawIntuitiveResearchKit")
 
     set (HEADER_FILES
+         ${sawIntuitiveResearchKit_HEADER_DIR}/mtsDelayPSM.h
          ${sawIntuitiveResearchKit_HEADER_DIR}/mtsStateMachine.h
          ${sawIntuitiveResearchKit_HEADER_DIR}/mtsIntuitiveResearchKitArm.h
          ${sawIntuitiveResearchKit_HEADER_DIR}/mtsIntuitiveResearchKitMTM.h
@@ -125,6 +126,7 @@ if (cisst_FOUND)
         )
 
     set (SOURCE_FILES
+         code/mtsDelayPSM.cpp
          code/mtsStateMachine.cpp
          code/mtsIntuitiveResearchKitArm.cpp
          code/mtsIntuitiveResearchKitMTM.cpp

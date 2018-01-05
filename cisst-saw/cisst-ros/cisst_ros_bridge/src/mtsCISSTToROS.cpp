@@ -108,7 +108,7 @@ void mtsCISSTToROS(const prmPositionCartesianGet & cisstData, geometry_msgs::Tra
 
 void mtsCISSTToROS(const prmPositionCartesianGet & cisstData, geometry_msgs::TransformStamped & rosData)
 {
-    mtsCISSTToROSHeader(cisstData, rosData);
+    mtsCISSTToROSHeader(rosData);
     mtsCISSTToROSTransform(cisstData.Position(), rosData.transform);
 }
 
@@ -121,6 +121,13 @@ void mtsCISSTToROS(const prmPositionCartesianGet & cisstData, geometry_msgs::Pos
 {
     mtsCISSTToROSHeader(cisstData, rosData);
     mtsCISSTToROSPose(cisstData.Position(), rosData.pose);
+}
+
+
+void mtsCISSTToROS(const prmPositionCartesianSet & cisstData, geometry_msgs::PoseStamped & rosData)
+{
+    mtsCISSTToROSHeader(cisstData, rosData);
+    mtsCISSTToROSPose(cisstData.Goal(), rosData.pose);
 }
 
 
@@ -448,3 +455,10 @@ void mtsCISSTToROS(const prmFixtureGainCartesianSet & cisstData,
     mtsCISSTToROS(cisstData.TorqueBiasNeg(), vector);
     rosData.TorqueBiasNeg = vector;
 }
+
+void mtsCISSTToROS(const double & cisstData, cisst_msgs::FloatStamped & rosData)
+{
+    mtsCISSTToROSHeader(rosData);
+    rosData.data = cisstData;
+}
+

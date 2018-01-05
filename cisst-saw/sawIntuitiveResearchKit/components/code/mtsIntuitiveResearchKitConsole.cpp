@@ -38,6 +38,8 @@ http://www.cisst.org/cisst/license.txt.
 #include <sawIntuitiveResearchKit/mtsTeleOperationPSM.h>
 #include <sawIntuitiveResearchKit/mtsTeleOperationECM.h>
 #include <sawIntuitiveResearchKit/mtsIntuitiveResearchKitConsole.h>
+#include <sawIntuitiveResearchKit/mtsDelayPSM.h>
+
 
 #include <json/json.h>
 
@@ -115,6 +117,10 @@ void mtsIntuitiveResearchKitConsole::Arm::ConfigureArm(const ArmType armType,
                 }
                 slave->Configure(mArmConfigurationFile);
                 componentManager->AddComponent(slave);
+
+                mtsDelayPSM * delayPSM = new mtsDelayPSM("Delay_" + Name() ,periodInSeconds);
+                delayPSM->Configure();
+                componentManager->AddComponent(delayPSM);
             }
         }
         break;
@@ -400,6 +406,11 @@ void mtsIntuitiveResearchKitConsole::TeleopPSM::ConfigureTeleop(const TeleopPSMT
             teleop->Configure();
             teleop->SetRegistrationRotation(orientation);
             componentManager->AddComponent(teleop);
+
+//            std::cout << "Delay_" + mName << std::endl;
+//            mtsDelayPSM * delayPSM = new mtsDelayPSM("Delay_" + mName ,periodInSeconds);
+//            delayPSM->Configure();
+//            componentManager->AddComponent(delayPSM);
         }
         break;
     case TELEOP_PSM_DERIVED:
@@ -431,7 +442,11 @@ bool mtsIntuitiveResearchKitConsole::TeleopPSM::Connect(void)
 {
     mtsManagerLocal * componentManager = mtsManagerLocal::GetInstance();
     componentManager->Connect(mName, "MTM", mMTMName, "Robot");
-    componentManager->Connect(mName, "PSM", mPSMName, "Robot");
+    //componentManager->Connect(mName, "PSM", mPSMName, "Robot");
+
+    componentManager->Connect(mName, "PSM", "Delay_" + mPSMName, "TeleOp");
+    componentManager->Connect("Delay_" + mPSMName, "PSM", mPSMName, "Robot");
+
     componentManager->Connect(mName, "Clutch", mConsoleName, "Clutch");
     componentManager->Connect(mConsoleName, mName, mName, "Setting");
     return true;
@@ -468,11 +483,14 @@ mtsIntuitiveResearchKitConsole::mtsIntuitiveResearchKitConsole(const std::string
                                            "SetScale", 0.5);
         interfaceProvided->AddCommandWrite(&mtsIntuitiveResearchKitConsole::SetDelay, this,
                                            "SetDelay", 0.0);
-
+        interfaceProvided->AddCommandWrite(&mtsIntuitiveResearchKitConsole::RosOnly, this,
+                                            "SetRosOnly", false);
         interfaceProvided->AddEventWrite(ConfigurationEvents.Scale,
                                          "Scale", 0.5);
         interfaceProvided->AddEventWrite(ConfigurationEvents.Delay,
                                          "Delay", 0.0);
+        interfaceProvided->AddEventWrite(ConfigurationEvents.RosOnly,
+                                            "RosOnly", false);
 
         interfaceProvided->AddEventWrite(MessageEvents.Error, "Error", std::string(""));
         interfaceProvided->AddEventWrite(MessageEvents.Warning, "Warning", std::string(""));
@@ -824,6 +842,7 @@ bool mtsIntuitiveResearchKitConsole::AddTeleopPSMInterfaces(TeleopPSM * teleop)
         teleop->InterfaceRequired->AddFunction("SetDesiredState", teleop->SetDesiredState);
         teleop->InterfaceRequired->AddFunction("SetScale", teleop->SetScale);
         teleop->InterfaceRequired->AddFunction("SetDelay", teleop->SetDelay);
+        teleop->InterfaceRequired->AddFunction("SetRosOnly", teleop->SetRosOnly);
         teleop->InterfaceRequired->AddEventHandlerWrite(&mtsIntuitiveResearchKitConsole::ErrorEventHandler, this, "Error");
         teleop->InterfaceRequired->AddEventHandlerWrite(&mtsIntuitiveResearchKitConsole::WarningEventHandler, this, "Warning");
         teleop->InterfaceRequired->AddEventHandlerWrite(&mtsIntuitiveResearchKitConsole::StatusEventHandler, this, "Status");
@@ -1509,19 +1528,6 @@ void mtsIntuitiveResearchKitConsole::SetScale(const double & scale)
 }
 void mtsIntuitiveResearchKitConsole::SetDelay(const double & delay)
 {
-  //std::cout << "Inside mtsIntuitiveResearchKitConsole::SetDelay: " << delay << std::endl;
-
-//  ros::NodeHandle nh;
-//  nh.setParam("delay", int(delay/1000.0));
-
-//  if(nh.hasParam("delay")){
-//    std::cout << "here" <<std::endl;
-//  }
-//  else{
-//    std::cout <<" not here" << std::endl;
-//  }
-
-
   const TeleopPSMList::iterator endTeleopPSM = mTeleopsPSM.end();
   for (TeleopPSMList::iterator iterTeleopPSM = mTeleopsPSM.begin();
        iterTeleopPSM != endTeleopPSM;
@@ -1529,6 +1535,17 @@ void mtsIntuitiveResearchKitConsole::SetDelay(const double & delay)
       iterTeleopPSM->second->SetDelay(delay);
   }
   ConfigurationEvents.Delay(delay);
+}
+
+void mtsIntuitiveResearchKitConsole::RosOnly(const bool & rosOnly){
+    const TeleopPSMList::iterator endTeleopPSM = mTeleopsPSM.end();
+    for (TeleopPSMList::iterator iterTeleopPSM = mTeleopsPSM.begin();
+         iterTeleopPSM != endTeleopPSM;
+         ++iterTeleopPSM){
+        iterTeleopPSM->second->SetRosOnly(rosOnly);
+    }
+    //std::cout << rosOnly << std::endl;
+    ConfigurationEvents.RosOnly(rosOnly);
 }
 
 void mtsIntuitiveResearchKitConsole::ClutchEventHandler(const prmEventButton & button)

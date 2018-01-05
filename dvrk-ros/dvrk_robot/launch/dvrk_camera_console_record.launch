@@ -1,0 +1,12 @@
+<launch>
+	<arg name="filename" default = "data_collection"/>
+	
+	<node type="record" pkg="rosbag" name="robot_recorder"  args="-o /media/arclab/NVME/$(arg filename)/robot/robot.bag --split --size=1000 -e /dvrk(.*)">	
+	<param name="mkdir_tmp" command="mkdir -m 777 -p /media/arclab/NVME/$(arg filename)/robot" />
+	</node>
+
+	<node type="record" pkg="rosbag" name="camera_recorder" args="-o /media/arclab/NVME/$(arg filename)/camera/camera.bag --split --size=1000
+		-e /stereo/slave/(left|right)/image_raw">
+	<param name="mkdir_tmp" command="mkdir -m 777 -p /media/arclab/NVME/$(arg filename)/camera" />
+	</node>
+</launch>

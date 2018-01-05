@@ -47,6 +47,8 @@ http://www.cisst.org/cisst/license.txt.
 // non standard messages
 #include <cisst_msgs/vctDoubleVec.h>
 #include <cisst_msgs/prmFixtureGainCartesianSet.h>
+#include <cisst_msgs/BoolStamped.h>
+#include <cisst_msgs/FloatStamped.h>
 
 // std_msgs
 void mtsROSToCISST(const std_msgs::Float32 & rosData, double & cisstData);
@@ -77,6 +79,8 @@ void mtsROSToCISST(const sensor_msgs::JointState & rosData, prmForceTorqueJointS
 // cisst_msgs
 void mtsROSToCISST(const cisst_msgs::vctDoubleVec & rosData, prmPositionJointSet & cisstData);
 void mtsROSToCISST(const cisst_msgs::vctDoubleVec & rosData, vctDoubleVec & cisstData);
-void mtsROSToCISST(const cisst_msgs::prmFixtureGainCartesianSet & rosData, prmFixtureGainCartesianSet & cisstData);
+void mtsROSToCISST(const cisst_msgs::BoolStamped & rosData, bool & cisstData);
+void mtsROSToCISST(const cisst_msgs::FloatStamped & rosData, double & cisstData);
+
 
 #endif // _mtsROSToCISST_h

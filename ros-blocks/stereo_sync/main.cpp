@@ -57,8 +57,8 @@ int main(int argc, char **argv)
   image_transport::Subscriber sub_R = it.subscribe("stereo/right/image_raw" , 1, imageCallback_R);
 
   //set up publisher:
-  image_transport::Publisher pub_L = it.advertise("stereo/left_sync/image_raw" , 1);
-  image_transport::Publisher pub_R = it.advertise("stereo/right_sync/image_raw", 1);
+  image_transport::Publisher pub_L = it.advertise("stereo/slave/left/image_raw" , 1);
+  image_transport::Publisher pub_R = it.advertise("stereo/slave/right/image_raw", 1);
 
    //Used for FPS caluclation. Just giving initial values!
    ros::Time startTime = ros::Time::now();

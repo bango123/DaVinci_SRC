@@ -100,6 +100,7 @@ void mtsROSToCISST(const geometry_msgs::PoseStamped & rosData, prmPositionCartes
 {
     mtsROSToCISST(rosData.pose, cisstData);
 }
+
 void mtsROSToCISST(const geometry_msgs::Pose & rosData, vctFrm3 & cisstData)
 {
     mtsROSPoseToCISST(rosData, cisstData);
@@ -235,4 +236,12 @@ void mtsROSToCISST(const cisst_msgs::prmFixtureGainCartesianSet & rosData, prmFi
 
     mtsROSToCISST(rosData.TorqueBiasNeg, vct3Data);
     cisstData.SetTorqueBiasNeg(vct3Data);
+}
+
+void mtsROSToCISST(const cisst_msgs::BoolStamped & rosData, bool & cisstData){
+    cisstData = rosData.data;
+}
+
+void mtsROSToCISST(const cisst_msgs::FloatStamped & rosData, double & cisstData){
+  cisstData = rosData.data;
 }

@@ -68,13 +68,17 @@ ULONG DeckLinkCaptureDelegate::Release(void)
 //This code gets ran when a frame arrives!!!!
 HRESULT DeckLinkCaptureDelegate::VideoInputFrameArrived(IDeckLinkVideoInputFrame* videoFrame, IDeckLinkAudioInputPacket* audioFrame)
 {
+  if(!ros::ok()){
+    disconectDeckLink();
+  }
+
   m_FrameCount++;
 
   //First timestamp!!!
   m_HeaderQueue.push_back(std_msgs::Header());
   m_HeaderQueue.front().stamp = ros::Time::now();
-  m_HeaderQueue.front().seq = m_FrameCount;
-  m_HeaderQueue.front().frame_id = "0";
+  //m_HeaderQueue.front().seq = m_FrameCount;
+  //m_HeaderQueue.front().frame_id = "0";
 
   if (m_isLeftCamera){
     printf("--------- Left New Frame---------\n");
@@ -106,7 +110,7 @@ HRESULT DeckLinkCaptureDelegate::VideoInputFrameArrived(IDeckLinkVideoInputFrame
 
   std::cout << "Size of buffer: " << m_FrameQueue.size() << std::endl;
 
-  if( !workerThread->isRunning() ){
+  if( !workerThread->isRunning() && ros::ok()){
     workerThread->setFrame( m_FrameQueue.front(), m_HeaderQueue.front());
     workerThread->start();
 

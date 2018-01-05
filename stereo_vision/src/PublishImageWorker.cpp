@@ -51,7 +51,9 @@ void PublishImageWorker::setFrame(const cv::Mat frame, const std_msgs::Header he
 }
 
 void PublishImageWorker::run() {
-
+  if(!ros::ok()){
+    return;
+  }
 
   cv_bridge::CvImage out_msg;
   out_msg.header   = m_header;

@@ -20,6 +20,7 @@ add_message_files(
   prmFixtureGainCartesianSet.msg
   BoolStamped.msg
   StringStamped.msg
+  FloatStamped.msg
   )
 
 ## Generate added messages and services with any dependencies listed here

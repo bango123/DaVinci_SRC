@@ -149,17 +149,17 @@ void mtsTeleOperationPSM::Configure(const std::string & CMN_UNUSED(filename))
     // setup cisst interfaces
     mtsInterfaceRequired * interfaceRequired = AddInterfaceRequired("MTM");
     if (interfaceRequired) {
-        interfaceRequired->AddFunction("GetPositionCartesian", mMTM->GetPositionCartesian);
+        interfaceRequired->AddFunction("GetPositionCartesian",        mMTM->GetPositionCartesian);
         interfaceRequired->AddFunction("GetPositionCartesianDesired", mMTM->GetPositionCartesianDesired);
-        interfaceRequired->AddFunction("SetPositionCartesian", mMTM->SetPositionCartesian);
-        interfaceRequired->AddFunction("SetPositionGoalCartesian", mMTM->SetPositionGoalCartesian);
-        interfaceRequired->AddFunction("GetGripperPosition", mMTM->GetGripperPosition);
-        interfaceRequired->AddFunction("LockOrientation", mMTM->LockOrientation);
-        interfaceRequired->AddFunction("UnlockOrientation", mMTM->UnlockOrientation);
-        interfaceRequired->AddFunction("SetWrenchBody", mMTM->SetWrenchBody);
-        interfaceRequired->AddFunction("SetGravityCompensation", mMTM->SetGravityCompensation);
-        interfaceRequired->AddFunction("GetRobotControlState", mMTM->GetRobotControlState);
-        interfaceRequired->AddFunction("SetRobotControlState", mMTM->SetRobotControlState);
+        interfaceRequired->AddFunction("SetPositionCartesian",        mMTM->SetPositionCartesian);
+        interfaceRequired->AddFunction("SetPositionGoalCartesian",    mMTM->SetPositionGoalCartesian);
+        interfaceRequired->AddFunction("GetGripperPosition",          mMTM->GetGripperPosition);
+        interfaceRequired->AddFunction("LockOrientation",             mMTM->LockOrientation);
+        interfaceRequired->AddFunction("UnlockOrientation",           mMTM->UnlockOrientation);
+        interfaceRequired->AddFunction("SetWrenchBody",               mMTM->SetWrenchBody);
+        interfaceRequired->AddFunction("SetGravityCompensation",      mMTM->SetGravityCompensation);
+        interfaceRequired->AddFunction("GetRobotControlState",        mMTM->GetRobotControlState);
+        interfaceRequired->AddFunction("SetRobotControlState",        mMTM->SetRobotControlState);
         interfaceRequired->AddEventHandlerWrite(&mtsTeleOperationPSM::MTMErrorEventHandler,
                                                 this, "Error");
     }
@@ -168,12 +168,13 @@ void mtsTeleOperationPSM::Configure(const std::string & CMN_UNUSED(filename))
     if (interfaceRequired) {
         interfaceRequired->AddFunction("GetPositionCartesian", mPSM->GetPositionCartesian);
         interfaceRequired->AddFunction("SetPositionCartesian", mPSM->SetPositionCartesian);
-        interfaceRequired->AddFunction("SetJawPosition", mPSM->SetJawPosition);
+        interfaceRequired->AddFunction("SetJawPosition",       mPSM->SetJawPosition);
         interfaceRequired->AddFunction("GetRobotControlState", mPSM->GetRobotControlState);
         interfaceRequired->AddFunction("SetRobotControlState", mPSM->SetRobotControlState);
         interfaceRequired->AddEventHandlerWrite(&mtsTeleOperationPSM::PSMErrorEventHandler,
                                                 this, "Error");
-        interfaceRequired->AddFunction("SetDelay", mPSM->SetDelay);
+        interfaceRequired->AddFunction("SetDelay",             mPSM->SetDelay);
+        interfaceRequired->AddFunction("SetRosOnly",           mPSM->SetRosOnly);
     }
 
     // footpedal events
@@ -191,9 +192,11 @@ void mtsTeleOperationPSM::Configure(const std::string & CMN_UNUSED(filename))
         interfaceProvided->AddCommandWrite(&mtsTeleOperationPSM::SetDesiredState, this,
                                            "SetDesiredState", std::string("DISABLED"));
         interfaceProvided->AddCommandWrite(&mtsTeleOperationPSM::SetScale, this,
-                                           "SetScale", 0.5);
+                                           "SetScale", 0.2);
         interfaceProvided->AddCommandWrite(&mtsTeleOperationPSM::SetDelay, this,
                                            "SetDelay", 0.0);
+        interfaceProvided->AddCommandWrite(&mtsTeleOperationPSM::SetRosOnly, this,
+                                            "SetRosOnly", false);
         interfaceProvided->AddCommandWrite(&mtsTeleOperationPSM::SetRegistrationRotation, this,
                                            "SetRegistrationRotation", vctMatRot3());
         interfaceProvided->AddCommandWrite(&mtsTeleOperationPSM::LockRotation, this,
@@ -232,9 +235,11 @@ void mtsTeleOperationPSM::Configure(const std::string & CMN_UNUSED(filename))
                                          "CurrentState", std::string(""));
         // configuration
         interfaceProvided->AddEventWrite(ConfigurationEvents.Scale,
-                                         "Scale", 0.5);
+                                         "Scale", 0.2);
         interfaceProvided->AddEventWrite(ConfigurationEvents.Delay,
                                          "Delay", 0.0);
+        interfaceProvided->AddEventWrite(ConfigurationEvents.RosOnly,
+                                            "RosOnly", false);
         interfaceProvided->AddEventWrite(ConfigurationEvents.RotationLocked,
                                          "RotationLocked", false);
         interfaceProvided->AddEventWrite(ConfigurationEvents.TranslationLocked,
@@ -330,6 +335,8 @@ void mtsTeleOperationPSM::SetDesiredState(const std::string & state)
 
 void mtsTeleOperationPSM::SetScale(const double & scale)
 {
+    //std::cout << "Inside mtsTeleOperationPSM::SetScale: " << scale << std::endl;
+
     mConfigurationStateTable->Start();
     mScale = scale;
     mConfigurationStateTable->Advance();
@@ -338,7 +345,7 @@ void mtsTeleOperationPSM::SetScale(const double & scale)
 
 void mtsTeleOperationPSM::SetDelay(const double & delay)
 {
- // std::cout << "Inside mtsTeleOperationPSM::SetDelay: " << delay << std::endl;
+  //std::cout << "Inside mtsTeleOperationPSM::SetDelay: " << delay << std::endl;
 
   mConfigurationStateTable->Start();
   mDelay = delay;
@@ -346,6 +353,13 @@ void mtsTeleOperationPSM::SetDelay(const double & delay)
   ConfigurationEvents.Delay(mDelay);
 
   mPSM->SetDelay(mDelay);
+}
+
+void mtsTeleOperationPSM::SetRosOnly(const bool & rosOnly)
+{
+   // std::cout << rosOnly << std::endl;
+    ConfigurationEvents.RosOnly(rosOnly);
+    mPSM->SetRosOnly(rosOnly);
 }
 
 void mtsTeleOperationPSM::SetRegistrationRotation(const vctMatRot3 & rotation)

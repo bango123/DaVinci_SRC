@@ -188,6 +188,7 @@ public:
         mtsFunctionWrite SetDesiredState;
         mtsFunctionWrite SetScale;
         mtsFunctionWrite SetDelay;
+        mtsFunctionWrite SetRosOnly;
         mtsInterfaceRequired * InterfaceRequired;
     };
 
@@ -261,6 +262,7 @@ protected:
     void UpdateTeleopState(void);
     void SetScale(const double & scale);
     void SetDelay(const double & delay);
+    void RosOnly(const bool & rosOnly);
 
     bool mHasIO;
     bool mHasFootpedals;
@@ -288,6 +290,7 @@ protected:
     struct {
         mtsFunctionWrite Scale;
         mtsFunctionWrite Delay;
+        mtsFunctionWrite RosOnly;
     } ConfigurationEvents;
 
     void ErrorEventHandler(const std::string & message);

@@ -41,7 +41,6 @@ http://www.cisst.org/cisst/license.txt.
 #include <QPixmap>
 #include <QShortcut>
 #include <QDoubleSpinBox>
-#include <QCheckBox>
 
 CMN_IMPLEMENT_SERVICES(mtsIntuitiveResearchKitConsoleQtWidget);
 
@@ -55,9 +54,6 @@ mtsIntuitiveResearchKitConsoleQtWidget::mtsIntuitiveResearchKitConsoleQtWidget(c
         interfaceRequired->AddFunction("TeleopEnable", Console.TeleopEnable);
         interfaceRequired->AddFunction("SetScale", Console.SetScale);
         interfaceRequired->AddFunction("SetDelay", Console.SetDelay);
-        interfaceRequired->AddFunction("SetRosOnly", Console.SetRosOnly);
-        interfaceRequired->AddEventHandlerWrite(&mtsIntuitiveResearchKitConsoleQtWidget::RosOnlyEventHandler,
-                                                this, "RosOnly");
         interfaceRequired->AddEventHandlerWrite(&mtsIntuitiveResearchKitConsoleQtWidget::ScaleEventHandler,
                                                 this, "Scale");
         interfaceRequired->AddEventHandlerWrite(&mtsIntuitiveResearchKitConsoleQtWidget::DelayEventHandler,
@@ -97,7 +93,6 @@ void mtsIntuitiveResearchKitConsoleQtWidget::HasTeleOp(const bool & hasTeleOp)
     QPBTeleopStop->setEnabled(hasTeleOp);
     QSBScale->setEnabled(hasTeleOp);
     QSBDelay->setEnabled(hasTeleOp);
-    QCBRosOnly->setEnabled(hasTeleOp);
 }
 
 void mtsIntuitiveResearchKitConsoleQtWidget::closeEvent(QCloseEvent * event)
@@ -145,11 +140,6 @@ void mtsIntuitiveResearchKitConsoleQtWidget::SlotSetScale(double scale)
 void mtsIntuitiveResearchKitConsoleQtWidget::SlotSetDelay(double delay)
 {
     Console.SetDelay(delay);
-}
-
-void mtsIntuitiveResearchKitConsoleQtWidget::SlotRosOnly(bool rosOnly)
-{
-    Console.SetRosOnly(rosOnly);
 }
 
 void mtsIntuitiveResearchKitConsoleQtWidget::SlotTextChanged(void)
@@ -207,10 +197,6 @@ void mtsIntuitiveResearchKitConsoleQtWidget::setupUi(void)
     QSBDelay->setValue(0);
     teleopLayout->addWidget(QSBDelay);
 
-    QCBRosOnly = new QCheckBox("Ros Only");
-    QCBRosOnly->setTristate(false);
-    teleopLayout->addWidget(QCBRosOnly);
-
     boxLayout->addStretch(100);
     buttonsWidget->setFixedWidth(buttonsWidget->sizeHint().width());
     mainLayout->addWidget(buttonsWidget);
@@ -260,12 +246,6 @@ void mtsIntuitiveResearchKitConsoleQtWidget::setupUi(void)
             this, SLOT(SlotSetDelay(double)));
     connect(this, SIGNAL(SignalDelay(double)),
             this, SLOT(SlotDelayEventHandler(double)));
-    
-    connect(QCBRosOnly, SIGNAL(clicked(bool)),
-            this, SLOT(SlotRosOnly(bool)));
-    connect(this, SIGNAL(SignalRosOnly(bool)),
-            this, SLOT(SlotRosOnlyEventHandler(bool)));
-
 
     // messages
     connect(this, SIGNAL(SignalAppendMessage(QString)),
@@ -296,15 +276,6 @@ void mtsIntuitiveResearchKitConsoleQtWidget::DelayEventHandler(const double & de
 {
     emit SignalDelay(delay);
 }
-
-void mtsIntuitiveResearchKitConsoleQtWidget::SlotRosOnlyEventHandler(bool rosOnly){
-    QCBRosOnly->setTristate(rosOnly);
-}
-
-void mtsIntuitiveResearchKitConsoleQtWidget::RosOnlyEventHandler(const bool & rosOnly){
-    emit SignalRosOnly(rosOnly);
-}
-
 
 void mtsIntuitiveResearchKitConsoleQtWidget::ErrorEventHandler(const std::string & message)
 {

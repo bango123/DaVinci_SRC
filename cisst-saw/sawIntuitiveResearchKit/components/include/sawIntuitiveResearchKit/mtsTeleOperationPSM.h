@@ -45,6 +45,7 @@ public:
 
     void SetScale(const double & scale);
     void SetDelay(const double & delay);
+    void SetRosOnly(const bool & rosOnly);
     void SetRegistrationRotation(const vctMatRot3 & rotation);
     void LockRotation(const bool & lock);
     void LockTranslation(const bool & lock);
@@ -72,6 +73,7 @@ protected:
     struct {
         mtsFunctionWrite Scale;
         mtsFunctionWrite Delay;
+        mtsFunctionWrite RosOnly;
         mtsFunctionWrite RotationLocked;
         mtsFunctionWrite TranslationLocked;
     } ConfigurationEvents;
@@ -122,6 +124,7 @@ protected:
         mtsFunctionRead  GetRobotControlState;
         mtsFunctionWrite SetRobotControlState;
         mtsFunctionWrite SetDelay;
+        mtsFunctionWrite SetRosOnly;
 
         prmPositionCartesianGet PositionCartesianCurrent;
         prmPositionCartesianSet PositionCartesianSet;

@@ -25,10 +25,11 @@ http://www.cisst.org/cisst/license.txt.
 #include <sawIntuitiveResearchKit/mtsIntuitiveResearchKitArm.h>
 #include <sawIntuitiveResearchKit/mtsIntuitiveResearchKitOptimizer.h>
 
+#include <boost/circular_buffer.hpp>
+#include <ros/ros.h>
+
 #include <sawIntuitiveResearchKit/sawIntuitiveResearchKitExport.h>
 
-#include <ros/ros.h>
-#include <boost/circular_buffer.hpp>
 
 
 class CISST_EXPORT mtsIntuitiveResearchKitPSM: public mtsIntuitiveResearchKitArm

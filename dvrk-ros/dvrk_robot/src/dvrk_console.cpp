@@ -46,7 +46,8 @@ dvrk::console::console(mtsROSBridge & bridge,
         switch (armIter->second->mType) {
         case mtsIntuitiveResearchKitConsole::Arm::ARM_MTM:
         case mtsIntuitiveResearchKitConsole::Arm::ARM_MTM_DERIVED:
-            dvrk::add_topics_mtm(bridge, mNameSpace + "/" + name, name, version);
+          //Turn off ROS Topics for MTM for now...
+            //dvrk::add_topics_mtm(bridge, mNameSpace + "/" + name, name, version);
             break;
         case mtsIntuitiveResearchKitConsole::Arm::ARM_ECM:
         case mtsIntuitiveResearchKitConsole::Arm::ARM_ECM_DERIVED:
@@ -54,7 +55,8 @@ dvrk::console::console(mtsROSBridge & bridge,
             break;
         case mtsIntuitiveResearchKitConsole::Arm::ARM_PSM:
         case mtsIntuitiveResearchKitConsole::Arm::ARM_PSM_DERIVED:
-            dvrk::add_topics_psm(bridge, mNameSpace + "/" + name, name, version);
+            dvrk::add_topics_psm(bridge, mNameSpace + "/" + name + "/slave", name, version);
+            dvrk::add_topics_delaypsm(bridge, mNameSpace + "/" + name, "Delay_" + name, version);
             break;
         case mtsIntuitiveResearchKitConsole::Arm::ARM_SUJ:
             dvrk::add_topics_suj(bridge, mNameSpace + "/SUJ/PSM1", "PSM1", version);
@@ -68,14 +70,18 @@ dvrk::console::console(mtsROSBridge & bridge,
 
     const mtsIntuitiveResearchKitConsole::TeleopPSMList::iterator
         teleopsEnd = mConsole->mTeleopsPSM.end();
+
     mtsIntuitiveResearchKitConsole::TeleopPSMList::iterator teleopIter;
+
     for (teleopIter = mConsole->mTeleopsPSM.begin();
          teleopIter != teleopsEnd;
          ++teleopIter) {
+
         const std::string name = teleopIter->first;
         std::string topic_name = teleopIter->first;
         std::replace(topic_name.begin(), topic_name.end(), '-', '_');
-        dvrk::add_topics_teleop(bridge, mNameSpace + "/" + topic_name, name, version);
+        //dvrk::add_topics_teleop(bridge, mNameSpace + "/" + topic_name, name, version);
+
     }
 
     if (mConsole->mHasFootpedals) {
@@ -113,30 +119,34 @@ void dvrk::console::Configure(const std::string & jsonFile)
                       << "or it doesn't have an IO component, no ROS bridge connected" << std::endl
                       << "for this IO." << std::endl;
         } else {
-            mtsROSBridge * rosIOBridge = new mtsROSBridge(bridgeNamePrefix + name, period, true);
-            dvrk::add_topics_io(*rosIOBridge,
-                                mNameSpace + "/" + name + "/io/",
-                                name, mVersion);
-            componentManager->AddComponent(rosIOBridge);
+//            mtsROSBridge * rosIOBridge = new mtsROSBridge(bridgeNamePrefix + name, period, true);
+//            dvrk::add_topics_io(*rosIOBridge,
+//                                mNameSpace + "/" + name + "/io/",
+//                                name, mVersion);
+//            componentManager->AddComponent(rosIOBridge);
             mIOInterfaces.push_back(name);
         }
     }
 }
 
-//I think this connects all of the components to the actual consol....??
 void dvrk::console::Connect(void)
 {
     const mtsIntuitiveResearchKitConsole::ArmList::iterator
         armEnd = mConsole->mArms.end();
+
     mtsIntuitiveResearchKitConsole::ArmList::iterator armIter;
+
     for (armIter = mConsole->mArms.begin();
          armIter != armEnd;
          ++armIter) {
+
         const std::string name = armIter->first;
+
         switch (armIter->second->mType) {
+
         case mtsIntuitiveResearchKitConsole::Arm::ARM_MTM:
         case mtsIntuitiveResearchKitConsole::Arm::ARM_MTM_DERIVED:
-            dvrk::connect_bridge_mtm(mBridgeName, name);
+            //dvrk::connect_bridge_mtm(mBridgeName, name);
             break;
         case mtsIntuitiveResearchKitConsole::Arm::ARM_ECM:
         case mtsIntuitiveResearchKitConsole::Arm::ARM_ECM_DERIVED:
@@ -145,6 +155,7 @@ void dvrk::console::Connect(void)
         case mtsIntuitiveResearchKitConsole::Arm::ARM_PSM:
         case mtsIntuitiveResearchKitConsole::Arm::ARM_PSM_DERIVED:
             dvrk::connect_bridge_psm(mBridgeName, name);
+            dvrk::connect_bridge_delaypsm(mBridgeName, "Delay_" + name);
             break;
         case mtsIntuitiveResearchKitConsole::Arm::ARM_SUJ:
             dvrk::connect_bridge_suj(mBridgeName, name, "PSM1");
@@ -163,7 +174,7 @@ void dvrk::console::Connect(void)
          teleopIter != teleopsEnd;
          ++teleopIter) {
         const std::string name = teleopIter->first;
-        dvrk::connect_bridge_teleop(mBridgeName, name);
+        //dvrk::connect_bridge_teleop(mBridgeName, name);
     }
 
     // connect foot pedal, all arms use same
@@ -175,13 +186,13 @@ void dvrk::console::Connect(void)
     dvrk::connect_bridge_console(mBridgeName, mConsole->GetName());
 
     // ros wrappers for IO
-    const std::list<std::string>::const_iterator end = mIOInterfaces.end();
-    std::list<std::string>::const_iterator iter;
-    for (iter = mIOInterfaces.begin();
-         iter != end;
-         iter++) {
-        const std::string bridgeName = bridgeNamePrefix + *iter;
-        const std::string ioComponentName = mConsole->GetArmIOComponentName(*iter);
-        dvrk::connect_bridge_io(bridgeName, ioComponentName, *iter);
-    }
+//    const std::list<std::string>::const_iterator end = mIOInterfaces.end();
+//    std::list<std::string>::const_iterator iter;
+//    for (iter = mIOInterfaces.begin();
+//         iter != end;
+//         iter++) {
+//        const std::string bridgeName = bridgeNamePrefix + *iter;
+//        const std::string ioComponentName = mConsole->GetArmIOComponentName(*iter);
+//        dvrk::connect_bridge_io(bridgeName, ioComponentName, *iter);
+//    }
 }

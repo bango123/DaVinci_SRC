@@ -1,24 +1,22 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(stereo_sync)
+project(stereo_bag2vid)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
-# add_compile_options(-std=c++11)
+add_compile_options(-std=c++11)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
+  cv_bridge
+  rosbag
   roscpp
-  rospy
-  std_msgs
-  image_transport
+  sensor_msgs
 )
 
-#add_dependencies(camera-delay beginner_tutorials_generate_messages_cpp)
-
-
 ## System dependencies are found with CMake's conventions
-# find_package(Boost REQUIRED COMPONENTS system)
+find_package(Boost REQUIRED)
+find_package(OpenCV REQUIRED)
 
 
 ## Uncomment this if the package has a setup.py. This macro ensures
@@ -74,7 +72,7 @@ find_package(catkin REQUIRED COMPONENTS
 ## Generate added messages and services with any dependencies listed here
 # generate_messages(
 #   DEPENDENCIES
-#   std_msgs
+#   sensor_msgs
 # )
 
 ################################################
@@ -108,9 +106,9 @@ find_package(catkin REQUIRED COMPONENTS
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
 #  INCLUDE_DIRS include
-#  LIBRARIES camera-delay
-#  CATKIN_DEPENDS roscpp rospy std_msgs
-#  DEPENDS system_lib
+#  LIBRARIES stereo_bag2vid
+   CATKIN_DEPENDS cv_bridge rosbag roscpp sensor_msgs
+   DEPENDS OpenCV Boost
 )
 
 ###########
@@ -122,11 +120,13 @@ catkin_package(
 include_directories(
 # include
   ${catkin_INCLUDE_DIRS}
+  ${OpenCV_INCLUDE_DIRS}
+  ${Boost_INCLUDE_DIRS}
 )
 
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/camera-delay.cpp
+#   src/${PROJECT_NAME}/stereo_bag2vid.cpp
 # )
 
 ## Add cmake target dependencies of the library
@@ -137,8 +137,8 @@ include_directories(
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-# add_executable(${PROJECT_NAME}_node src/camera-delay_node.cpp)
-add_executable(stereo_sync main.cpp)
+# add_executable(${PROJECT_NAME}_node src/stereo_bag2vid_node.cpp)
+add_executable(bag2vid main.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -152,11 +152,13 @@ add_executable(stereo_sync main.cpp)
 
 ## Specify libraries to link a library or executable target against
 # target_link_libraries(${PROJECT_NAME}_node
-#   ${catkin_LIBRARIES}
+#   ${catkin_LIBsRARIES}
 # )
-target_link_libraries(stereo_sync ${catkin_LIBRARIES})
-
-
+target_link_libraries(bag2vid
+    ${catkin_LIBRARIES}
+    ${OpenCV_LIBS}
+    ${Boost_LIBRARIES}
+)
 #############
 ## Install ##
 #############
@@ -172,11 +174,11 @@ target_link_libraries(stereo_sync ${catkin_LIBRARIES})
 # )
 
 ## Mark executables and/or libraries for installation
-#install(TARGETS stereo_sync 
-#   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-#   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-#   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-# )
+install(TARGETS bag2vid
+   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+ )
 
 ## Mark cpp header files for installation
 # install(DIRECTORY include/${PROJECT_NAME}/
@@ -197,7 +199,7 @@ target_link_libraries(stereo_sync ${catkin_LIBRARIES})
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_camera-delay.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_stereo_bag2vid.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()

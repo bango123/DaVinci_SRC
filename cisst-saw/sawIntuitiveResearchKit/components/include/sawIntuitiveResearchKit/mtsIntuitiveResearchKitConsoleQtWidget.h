@@ -26,6 +26,7 @@ class QPushButton;
 class QTextEdit;
 class QTabWidget;
 class QDoubleSpinBox;
+class QCheckBox;
 
 #include <QWidget>
 
@@ -51,6 +52,7 @@ signals:
     void SignalDelay(double delay);
     void SignalAppendMessage(QString);
     void SignalSetColor(QColor);
+    void SignalRosOnly(bool rosOnly);
 
 private slots:
     void SlotPowerOff(void);
@@ -59,11 +61,12 @@ private slots:
     void SlotTeleopStop(void);
     void SlotSetScale(double scale);
     void SlotSetDelay(double delay);
-
+    void SlotRosOnly(bool rosOnly);
+        
     void SlotScaleEventHandler(double scale);
     void SlotDelayEventHandler(double delay);
     void SlotTextChanged(void);
-
+    void SlotRosOnlyEventHandler(bool rosOnly);
 protected:
     void closeEvent(QCloseEvent * event);
 
@@ -75,6 +78,7 @@ protected:
         mtsFunctionWrite TeleopEnable;
         mtsFunctionWrite SetScale;
         mtsFunctionWrite SetDelay;
+        mtsFunctionWrite SetRosOnly;
     } Console;
 
     void ScaleEventHandler(const double & scale);
@@ -82,6 +86,7 @@ protected:
     void ErrorEventHandler(const std::string & message);
     void WarningEventHandler(const std::string & message);
     void StatusEventHandler(const std::string & message);
+    void RosOnlyEventHandler(const bool & rosOnly);
 
     QPushButton * QPBPowerOff;
     QPushButton * QPBHome;
@@ -91,6 +96,8 @@ protected:
     QDoubleSpinBox * QSBDelay;
     QTabWidget * QTWidgets;
     QTextEdit * QTEMessages;
+
+    QCheckBox * QCBRosOnly;
 };
 
 CMN_DECLARE_SERVICES_INSTANTIATION(mtsIntuitiveResearchKitConsoleQtWidget);

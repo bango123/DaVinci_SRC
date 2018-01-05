@@ -12,6 +12,7 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   std_msgs
   image_transport
+  cisst_msgs
 )
 
 #add_dependencies(camera-delay beginner_tutorials_generate_messages_cpp)

@@ -1,5 +1,5 @@
-#ifndef DECKLINKCAPTUREWORKER_H
-#define DECKLINKCAPTUREWORKER_H
+#ifndef PUBLISHIMAGEWORKER_H
+#define PUBLISHIMAGEWORKER_H
 
 #include <QThread>
 #include <QMutex>

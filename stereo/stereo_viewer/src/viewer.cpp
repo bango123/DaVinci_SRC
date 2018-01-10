@@ -72,6 +72,11 @@ void Viewer::loop(){
     cv::imshow( m_image_topic1, m_img1);
     cv::imshow( m_image_topic2, m_img2);
 
+    //cv::cuda::GpuMat test;
+    //test.upload(m_img1);
+
+
+
     cv::waitKey(1);
 
 	}

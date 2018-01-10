@@ -11,7 +11,7 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
   std_msgs
-  stereo_vision
+#  stereo_vision
 )
 
 catkin_package(

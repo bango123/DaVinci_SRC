@@ -320,6 +320,9 @@ void dvrk::add_topics_psm(mtsROSBridge & bridge,
         (psm_component_name, "SetRobotControlState",
          ros_namespace + "/set_robot_state");
 
+    bridge.AddPublisherFromEventWrite<std::string, std_msgs::String>
+            (psm_component_name, "RobotState", ros_namespace + "/robot_state");
+
     bridge.AddSubscriberToCommandWrite<prmPositionJointSet, sensor_msgs::JointState>
         (psm_component_name, "SetPositionJoint",
          ros_namespace + "/set_joint_angles");

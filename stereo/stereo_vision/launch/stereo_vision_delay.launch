@@ -1,0 +1,9 @@
+<launch>
+
+    <node name="stereo_publisher"   pkg="stereo_vision"      type="stereo_publisher"                                    />
+
+    <node name="stereo_sync_delay"  pkg="stereo_ros_blocks"  type="sync_delay"                                          />
+
+    <node name="image_viewer"       pkg="stereo_viewer"      type="stereo_viewer_dvrk" />
+
+</launch>

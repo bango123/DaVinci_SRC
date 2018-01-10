@@ -14,20 +14,16 @@ To run the most up-to date stuff use launchfile:
     roslaunch dvrk_robot dvrk_console.launch
     roslaunch stereo_vision stereo_vision_delay.launch
 
+To record use the following launchfile, this will be saved to the NVME drive:
+    roslaunch dvrk_robot dvrk_camera_console_record.launch <name-of-folder>
+
+To convert bag cam folder to .avi file, this will be output in HOME folder:
+    rosrun stereo_ros_blocks bag2vid <filepath-to-folder-with-cam-bags> <output-file-name>.avi
 
 To run DVRK:
 rosrun dvrk_robot dvrk_console_json -j ~/catkin_ws/src/cisst-saw/sawIntuitiveResearchKit/share/ucsd-dVRK/console-MTMR-PSM1-MTML-PSM2-Teleop.json -i ~/catkin_ws/src/cisst-saw/sawIntuitiveResearchKit/share/ros-io-PSM2.json -i ~/catkin_ws/src/cisst-saw/sawIntuitiveResearchKit/share/ros-io-PSM1.json -i ~/catkin_ws/src/cisst-saw/sawIntuitiveResearchKit/share/ros-io-MTML.json -i ~/catkin_ws/src/cisst-saw/sawIntuitiveResearchKit/share/ros-io-MTMR.json
 
-To have cameras running by themselves publishing to ROS:
-~/catkin_ws/devel/lib/StereoVision/testCameraCaptureDelegate
 
-From there, use image_viewer to display the images. Like so:
-rosrun image_view image_view image:=/stereo/left/image_raw
-rosrun image_view image_view image:=/stereo/right/image_raw
-
-or if delay is running:
-rosrun image_view image_view image:=/stereo/left_delay/image_raw
-rosrun image_view image_view image:=/stereo/right_delay/image_raw
 
 To run stereo calibration:
 1) Run stereo calibration pacakge

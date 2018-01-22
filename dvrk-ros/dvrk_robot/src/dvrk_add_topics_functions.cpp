@@ -25,13 +25,13 @@ void dvrk::add_topics_console(mtsROSBridge & bridge,
 {
     bridge.AddSubscriberToCommandVoid
         ("Console", "PowerOff",
-         ros_namespace + "/power_off");
+         ros_namespace + "/set_power_off");
     bridge.AddSubscriberToCommandVoid
         ("Console", "Home",
-         ros_namespace + "/home");
+         ros_namespace + "/set_home");
     bridge.AddSubscriberToCommandWrite<bool,  cisst_msgs::BoolStamped>
         ("Console", "TeleopEnable",
-         ros_namespace + "/teleop/enable");
+         ros_namespace + "/teleop/set_enable");
     bridge.AddSubscriberToCommandWrite<double, cisst_msgs::FloatStamped>
         ("Console", "SetScale",
          ros_namespace + "/teleop/set_scale");
@@ -53,7 +53,12 @@ void dvrk::add_topics_console(mtsROSBridge & bridge,
     bridge.AddPublisherFromEventWrite<bool,  cisst_msgs::BoolStamped>
         ("Console", "RosOnly",
          ros_namespace + "/teleop/ros_only");
-
+    bridge.AddPublisherFromEventWrite<bool,  cisst_msgs::BoolStamped>
+        ("Console", "PowerStatus",
+         ros_namespace + "/power_status");
+    bridge.AddPublisherFromEventWrite<bool,  cisst_msgs::BoolStamped>
+        ("Console", "TeleopStatus",
+         ros_namespace + "/teleop/status");
 }
 
 void dvrk::connect_bridge_console(mtsROSBridge & bridge,
@@ -326,6 +331,14 @@ void dvrk::add_topics_psm(mtsROSBridge & bridge,
     bridge.AddSubscriberToCommandWrite<prmPositionJointSet, sensor_msgs::JointState>
         (psm_component_name, "SetPositionJoint",
          ros_namespace + "/set_joint_angles");
+
+    bridge.AddSubscriberToCommandWrite<prmPositionJointSet, sensor_msgs::JointState>
+        (psm_component_name, "SetPositionGoalJoint",
+         ros_namespace + "/set_joint_angles_goal");
+
+    bridge.AddSubscriberToCommandWrite<prmPositionCartesianSet, geometry_msgs::PoseStamped>
+            (psm_component_name, "SetPositionGoalCartesian",
+             ros_namespace + "/set_position_goal_cartesian");
 
 //    bridge.AddSubscriberToCommandWrite<bool, std_msgs::Bool>
 //        (psm_component_name, "SetToolPresent", ros_namespace + "/set_tool_present");

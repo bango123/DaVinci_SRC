@@ -490,7 +490,12 @@ mtsIntuitiveResearchKitConsole::mtsIntuitiveResearchKitConsole(const std::string
         interfaceProvided->AddEventWrite(ConfigurationEvents.Delay,
                                          "Delay", 0.0);
         interfaceProvided->AddEventWrite(ConfigurationEvents.RosOnly,
-                                            "RosOnly", false);
+                                         "RosOnly", false);
+        interfaceProvided->AddEventWrite(ConfigurationEvents.PowerStatus,
+                                            "PowerStatus", false);
+        interfaceProvided->AddEventWrite(ConfigurationEvents.TeleopStatus,
+                                            "TeleopStatus", false);
+
 
         interfaceProvided->AddEventWrite(MessageEvents.Error, "Error", std::string(""));
         interfaceProvided->AddEventWrite(MessageEvents.Warning, "Warning", std::string(""));
@@ -1388,6 +1393,9 @@ bool mtsIntuitiveResearchKitConsole::Connect(void)
 void mtsIntuitiveResearchKitConsole::PowerOff(void)
 {
     mTeleopEnabled = false;
+    ConfigurationEvents.TeleopStatus(false);
+    ConfigurationEvents.PowerStatus(false);
+
     UpdateTeleopState();
     const ArmList::iterator end = mArms.end();
     for (ArmList::iterator arm = mArms.begin();
@@ -1400,6 +1408,9 @@ void mtsIntuitiveResearchKitConsole::PowerOff(void)
 void mtsIntuitiveResearchKitConsole::Home(void)
 {
     mTeleopEnabled = false;
+    ConfigurationEvents.TeleopStatus(false);
+    ConfigurationEvents.PowerStatus(true);
+
     UpdateTeleopState();
     const ArmList::iterator end = mArms.end();
     for (ArmList::iterator arm = mArms.begin();
@@ -1413,6 +1424,7 @@ void mtsIntuitiveResearchKitConsole::TeleopEnable(const bool & enable)
 {
     mtsExecutionResult result;
     mTeleopEnabled = enable;
+    ConfigurationEvents.TeleopStatus(enable);
     UpdateTeleopState();
 }
 
@@ -1568,7 +1580,7 @@ void mtsIntuitiveResearchKitConsole::CameraEventHandler(const prmEventButton & b
         MessageEvents.Status(this->GetName() + ": camera released");
     }
     UpdateTeleopState();
-    ConsoleEvents.OperatorPresent(button);
+    ConsoleEvents.Camera(button);
 }
 
 void mtsIntuitiveResearchKitConsole::OperatorPresentEventHandler(const prmEventButton & button)

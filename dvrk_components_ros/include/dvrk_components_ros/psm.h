@@ -17,10 +17,9 @@ public:
   explicit PSM(ros::NodeHandle nh, int psm, QObject *parent = nullptr);
 
   //Set functions
-  void set_delay      (float delay);
-  void set_scale      (float scale);
   void set_robot_state(std::string robotState);
 
+  //For these functions make sure the robot state is DVRK_POSITION_CARTESIAN
   void set_master_jaw     (cisst_msgs   ::FloatStamped  master_jaw);
   void set_master_cart_pos(geometry_msgs::PoseStamped   master_cart_pos);
   void set_slave_jaw      (cisst_msgs   ::FloatStamped  slave_jaw);
@@ -28,11 +27,27 @@ public:
 
   //This goes straight to the PSM arm. NOT effected by delay channel
   void set_joint_angles   (sensor_msgs  ::JointState    joint_angles);
+  //Goes straight to PSM arm too. Make srue robot state is DVRK_POSITION_GOAL_CARTESIAN
+  //To control the jaw in this mode, use set_slave_jaw()
+  void set_pos_goal_cart(geometry_msgs::PoseStamped  cart_pos);
+  //Goes straight to PSM arm too. Make srue robot state is DVRK_POSITION_GOAL_JOINT
+  //To control the jaw in this mode, use set_slave_jaw()
+  void set_joint_angles_goal(sensor_msgs  ::JointState    joint_angles);
 
   //Get functions
-  float get_delay();
-  float get_scale();
   std::string get_robot_state();
+  //Robot state can be:
+  //  DVRK_UNINITIALIZED
+  //  DVRK_HOMING_BIAS_ENCODER
+  //  DVRK_HOMING_POWERING
+  //  DVRK_ARM_CALIBRATED
+  //  DVRK_READY (DO NOT DO ANYTHING TILL YOU HAVE REACHED AT LEAST THIS STATE. THIS MEANS STUFF IS READY!!)
+  //  DVRK_POSITION_JOINT (use for set_joint_angles)
+  //  DVRK_POSITION_GOAL_JOINT
+  //  DVRK_POSITION_CARTESIAN (use for all of hte set_master /set_slave functions)
+  //  DVRK_POSITION_GOAL_CARTESIAN (use for set_pos_goal_cart)
+  //  DVRK_EFFORT_CARTESIAN
+  //  DVRK_MANUAL (this state occurs when someone pushes the buttons on the robot to move them around)
 
   //target values refer to where the surgeon/operator is targetting the end effector
   cisst_msgs   ::FloatStamped    get_target_master_jaw();
@@ -50,9 +65,6 @@ public:
 //Signals that can be connected to!! Can be useful if you want to use stuff more as a notification/callback in your code.
 //These signals are emitted after the callback from the corresponding subscribed topic occurs.
 signals:
-  //Value in mS
-  void delay_changed(float delay);
-  void scale_changed(float scale);
   void robot_state_changed(std::string robot_state);
 
   //Target here refers to the signal given from the master arms about where to target the slave arms
@@ -68,16 +80,11 @@ signals:
   void slave_joint_angles_changed     (sensor_msgs  ::JointState    slave_joint_angles);
   void slave_cart_pos_changed         (geometry_msgs::PoseStamped   slave_cart_pos);
 
-public slots:
-
 private:
   ros::NodeHandle m_nh;
   int m_psm;
 
   //All the subscribers
-  ros::Subscriber m_sub_delay;
-  ros::Subscriber m_sub_scale;
-
   ros::Subscriber m_sub_master_target_jaw;
   ros::Subscriber m_sub_master_target_cart_pos;
   ros::Subscriber m_sub_slave_target_jaw;
@@ -89,10 +96,6 @@ private:
   ros::Subscriber m_sub_slave_cart_pos;
 
   ros::Subscriber m_sub_robot_state;
-
-  //Subscriber callback functions
-  void delayCallback(const cisst_msgs::FloatStamped& msg);
-  void scaleCallback(const cisst_msgs::FloatStamped& msg);
 
   void master_target_jawPosCallback (const cisst_msgs   ::FloatStamped& msg);
   void master_target_cartPosCallback(const geometry_msgs::PoseStamped& msg);
@@ -106,9 +109,6 @@ private:
 
   void robot_stateCallback          (const std_msgs     ::String& msg);
 
-  //In mS
-  float m_delay;
-  float m_scale;
 
   std::string m_robot_state;
 
@@ -125,14 +125,15 @@ private:
 
   //All the publishers
   //Use these to publish to the PSM arm!
-  ros::Publisher m_pub_delay;
-  ros::Publisher m_pub_scale;
   ros::Publisher m_pub_set_robot_state;
 
   ros::Publisher m_pub_master_jaw;
   ros::Publisher m_pub_master_cart_pos;
   ros::Publisher m_pub_slave_jaw;
   ros::Publisher m_pub_slave_cart_pos;
+
+  ros::Publisher m_pub_set_goal_position;
+  ros::Publisher m_pub_joint_angles_goal;
 
   //Untested...
   ros::Publisher m_pub_joint_angles;

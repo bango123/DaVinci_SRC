@@ -5,9 +5,6 @@ PSM::PSM(ros::NodeHandle nh, int psm, QObject *parent) : m_nh(nh), m_psm(psm), Q
     std::string ros_node_string = "/dvrk/PSM" + std::to_string(psm) + "/";
 
     //Subscribe to all of the data streams from ROS:
-    m_sub_delay                   = m_nh.subscribe("dvrk/console/teleop/delay", 1, &PSM::delayCallback, this);
-    m_sub_scale                   = m_nh.subscribe("dvrk/console/teleop/scale", 1, &PSM::scaleCallback, this);
-
     m_sub_master_target_jaw       = m_nh.subscribe(ros_node_string + "master/target_jaw_position",        1, &PSM::master_target_jawPosCallback, this);
     m_sub_master_target_cart_pos  = m_nh.subscribe(ros_node_string + "master/target_position_cartesian",  1, &PSM::master_target_cartPosCallback, this);
     m_sub_slave_target_jaw        = m_nh.subscribe(ros_node_string + "slave/target_jaw_position",         1, &PSM::slave_target_jawPosCallback, this);
@@ -21,31 +18,17 @@ PSM::PSM(ros::NodeHandle nh, int psm, QObject *parent) : m_nh(nh), m_psm(psm), Q
     m_sub_robot_state             = m_nh.subscribe(ros_node_string + "slave/robot_state",                 1, &PSM::robot_stateCallback, this);
 
     //Set up publishers to all of the data streams from ROS:
-    m_pub_delay                   = m_nh.advertise<cisst_msgs::FloatStamped>("dvrk/console/teleop/set_delay", 1);
-    m_pub_scale                   = m_nh.advertise<cisst_msgs::FloatStamped>("dvrk/console/teleop/set_scale", 1);
+    m_pub_master_jaw              = m_nh.advertise<cisst_msgs::FloatStamped>  (ros_node_string + "master/set_jaw_position",         1);
+    m_pub_master_cart_pos         = m_nh.advertise<geometry_msgs::PoseStamped>(ros_node_string + "master/set_position_cartesian",   1);
+    m_pub_slave_jaw               = m_nh.advertise<cisst_msgs::FloatStamped>  (ros_node_string + "slave/set_jaw_position",          1);
+    m_pub_slave_cart_pos          = m_nh.advertise<geometry_msgs::PoseStamped>(ros_node_string + "slave/set_position_cartesian",    1);
 
-    m_pub_master_jaw              = m_nh.advertise<cisst_msgs::FloatStamped>  (ros_node_string + "master/set_jaw_position",       1);
-    m_pub_master_cart_pos         = m_nh.advertise<geometry_msgs::PoseStamped>(ros_node_string + "master/set_position_cartesian", 1);
-    m_pub_slave_jaw               = m_nh.advertise<cisst_msgs::FloatStamped>  (ros_node_string + "slave/set_jaw_position",        1);
-    m_pub_slave_cart_pos          = m_nh.advertise<geometry_msgs::PoseStamped>(ros_node_string + "slave/set_position_cartesian",  1);
-
-    m_pub_joint_angles            = m_nh.advertise<sensor_msgs::JointState>   (ros_node_string + "slave/set_joint_angles",        1);
-    m_pub_set_robot_state         = m_nh.advertise<std_msgs::String>          (ros_node_string + "slave/set_robot_state",         1);
+    m_pub_set_goal_position       = m_nh.advertise<geometry_msgs::PoseStamped>(ros_node_string + "slave/set_position_goal_cartesian",1);
+    m_pub_joint_angles            = m_nh.advertise<sensor_msgs::JointState>   (ros_node_string + "slave/set_joint_angles",           1);
+    m_pub_joint_angles_goal       = m_nh.advertise<sensor_msgs::JointState>   (ros_node_string + "slave/set_joint_angles_goal",      1);
+    m_pub_set_robot_state         = m_nh.advertise<std_msgs::String>          (ros_node_string + "slave/set_robot_state",            1);
 }
 
-void PSM::set_delay(float delay){
-  cisst_msgs::FloatStamped msg;
-  msg.header.stamp = ros::Time::now();
-  msg.data = delay;
-  m_pub_delay.publish(msg);
-}
-
-void PSM::set_scale(float scale){
-  cisst_msgs::FloatStamped msg;
-  msg.header.stamp = ros::Time::now();
-  msg.data = scale;
-  m_pub_scale.publish(msg);
-}
 
 void PSM::set_robot_state(std::string robotState){
   std_msgs::String msg;
@@ -54,32 +37,68 @@ void PSM::set_robot_state(std::string robotState){
 }
 
 void PSM::set_master_jaw(cisst_msgs::FloatStamped  master_jaw){
+  if( m_robot_state != "DVRK_POSITION_CARTESIAN"){
+      std::cout << "Command not sent" << std::endl;
+      std::cout << "Set state to : DVRK_POSITION_CARTESIAN" << std::endl;
+      return;
+  }
   m_pub_master_jaw.publish(master_jaw);
 }
 
 void PSM::set_master_cart_pos(geometry_msgs::PoseStamped master_cart_pos){
+  if( m_robot_state != "DVRK_POSITION_CARTESIAN"){
+      std::cout << "Command not sent" << std::endl;
+      std::cout << "Set state to : DVRK_POSITION_CARTESIAN" << std::endl;
+      return;
+  }
   m_pub_master_cart_pos.publish(master_cart_pos);
 }
 
 void PSM::set_slave_jaw(cisst_msgs::FloatStamped  slave_jaw){
+  if( m_robot_state != "DVRK_POSITION_CARTESIAN" && m_robot_state != "DVRK_POSITION_GOAL_CARTESIAN"){
+      std::cout << "Command not sent" << std::endl;
+      std::cout << "Set state to : DVRK_POSITION_CARTESIAN or DVRK_POSITION_GOAL_CARTESIAN" << std::endl;
+      return;
+  }
   m_pub_slave_jaw.publish(slave_jaw);
 }
 
 void PSM::set_slave_cart_pos(geometry_msgs::PoseStamped slave_cart_pos){
+  if( m_robot_state != "DVRK_POSITION_CARTESIAN"){
+      std::cout << "Command not sent" << std::endl;
+      std::cout << "Set state to : DVRK_POSITION_CARTESIAN" << std::endl;
+      return;
+  }
   m_pub_slave_cart_pos.publish(slave_cart_pos);
 }
 
 void PSM::set_joint_angles(sensor_msgs  ::JointState joint_angles){
+  if( m_robot_state != "DVRK_POSITION_JOINT"){
+      std::cout << "Command not sent" << std::endl;
+      std::cout << "Set state to : DVRK_POSITION_CARTESIAN" << std::endl;
+      return;
+  }
   m_pub_joint_angles.publish(joint_angles);
 }
 
-float PSM::get_delay(){
-  return m_delay;
+void PSM::set_pos_goal_cart(geometry_msgs::PoseStamped cart_pos){
+  if( m_robot_state != "DVRK_POSITION_GOAL_CARTESIAN"){
+      std::cout << "Command not sent" << std::endl;
+      std::cout << "Set state to : DVRK_POSITION_GOAL_CARTESIAN" << std::endl;
+      return;
+  }
+  m_pub_set_goal_position.publish(cart_pos);
 }
 
-float PSM::get_scale(){
-  return m_scale;
+void PSM::set_joint_angles_goal(sensor_msgs::JointState joint_angles){
+  if( m_robot_state != "DVRK_POSITION_GOAL_JOINT"){
+      std::cout << "Command not sent" << std::endl;
+      std::cout << "Set state to : DVRK_POSITION_GOAL_JOINT" << std::endl;
+      return;
+  }
+  m_pub_joint_angles_goal.publish(joint_angles);
 }
+
 
 std::string PSM::get_robot_state(){
   return m_robot_state;
@@ -115,16 +134,6 @@ sensor_msgs::JointState PSM::get_slave_joint_angles(){
 
 geometry_msgs::PoseStamped PSM::get_slave_cart_pos(){
   return m_slave_cart_pos;
-}
-
-void PSM::delayCallback(const cisst_msgs::FloatStamped& msg){
-  m_delay = msg.data;
-  emit delay_changed(m_delay);
-}
-
-void PSM::scaleCallback(const cisst_msgs::FloatStamped& msg){
-  m_scale = msg.data;
-  emit scale_changed(m_scale);
 }
 
 void PSM::master_target_jawPosCallback(const cisst_msgs::FloatStamped& msg){

@@ -291,6 +291,10 @@ protected:
         mtsFunctionWrite Scale;
         mtsFunctionWrite Delay;
         mtsFunctionWrite RosOnly;
+        //True if Home, false if power off hit
+        mtsFunctionWrite PowerStatus;
+        //True if teleop is enabled/disabled!!
+        mtsFunctionWrite TeleopStatus;
     } ConfigurationEvents;
 
     void ErrorEventHandler(const std::string & message);

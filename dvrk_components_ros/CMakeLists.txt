@@ -11,7 +11,11 @@ find_package(catkin REQUIRED COMPONENTS
   cisst_msgs
   roscpp
   sensor_msgs
+  cv_bridge
+  image_transport
 )
+
+find_package( OpenCV REQUIRED )
 
 find_package(Qt5Core REQUIRED)
 
@@ -108,7 +112,7 @@ catkin_package(
   INCLUDE_DIRS include
   LIBRARIES dvrk_components_ros
   CATKIN_DEPENDS cisst_msgs roscpp sensor_msgs
-#  DEPENDS system_lib
+  DEPENDS OpenCV
 )
 
 ###########
@@ -121,6 +125,7 @@ include_directories(
   include
   ${catkin_INCLUDE_DIRS}
   ${Qt5Core_INCLUDE_DIRS}
+  ${OpenCV_INCLUDE_DIRS}
 )
 
 set (CMAKE_AUTOMOC ON)
@@ -128,7 +133,9 @@ set (CMAKE_AUTOMOC ON)
 ## Declare a C++ library
 add_library(${PROJECT_NAME}
    src/psm.cpp
+   src/teleop.cpp
    include/dvrk_components_ros/psm.h
+   include/dvrk_components_ros/teleop.h
  )
 
 ## Add cmake target dependencies of the library
@@ -140,6 +147,9 @@ add_library(${PROJECT_NAME}
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
 add_executable(passthrough_psm examples/passthrough_psm.cpp)
+add_executable(test_goal_psm examples/test_goal_psm.cpp)
+add_executable(calibrate_psm examples/calibrate_psm.cpp)
+
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -157,8 +167,17 @@ target_link_libraries(${PROJECT_NAME}
    ${Qt5Core_LIBRARIES}
  )
 
-target_link_libraries(test_psm
+target_link_libraries(passthrough_psm
    ${PROJECT_NAME})
+
+target_link_libraries(test_goal_psm
+   ${PROJECT_NAME})
+
+target_link_libraries(calibrate_psm
+   ${PROJECT_NAME})
+
+target_link_libraries(calibrate_psm
+    ${OpenCV_LIBS})
 
 #############
 ## Install ##
@@ -175,7 +194,7 @@ target_link_libraries(test_psm
 # )
 
 ## Mark executables and/or libraries for installation
- install(TARGETS ${PROJECT_NAME} test_psm
+ install(TARGETS ${PROJECT_NAME} passthrough_psm test_goal_psm calibrate_psm
    ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
    LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
    RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}

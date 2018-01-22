@@ -208,7 +208,7 @@ void mtsIntuitiveResearchKitConsoleQtWidget::setupUi(void)
     teleopLayout->addWidget(QSBDelay);
 
     QCBRosOnly = new QCheckBox("Ros Only");
-    QCBRosOnly->setTristate(false);
+    QCBRosOnly->setChecked(false);
     teleopLayout->addWidget(QCBRosOnly);
 
     boxLayout->addStretch(100);
@@ -298,7 +298,7 @@ void mtsIntuitiveResearchKitConsoleQtWidget::DelayEventHandler(const double & de
 }
 
 void mtsIntuitiveResearchKitConsoleQtWidget::SlotRosOnlyEventHandler(bool rosOnly){
-    QCBRosOnly->setTristate(rosOnly);
+    QCBRosOnly->setChecked(rosOnly);
 }
 
 void mtsIntuitiveResearchKitConsoleQtWidget::RosOnlyEventHandler(const bool & rosOnly){

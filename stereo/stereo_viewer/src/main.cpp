@@ -14,6 +14,7 @@ int main(int argc, char **argv){
 
   //view.disp_checkerboard = true;
 
+  view.setFilePath("/home/arclab");
   view.run();
   while(ros::ok()){}
 	

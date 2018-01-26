@@ -11,6 +11,8 @@
 
 #include <opencv2/core/core.hpp>
 #include <string>
+#include <thread>
+
 
 class Viewer 
 {
@@ -25,6 +27,7 @@ public:
   //Must use setDisparitySubscribers BEFORE running displayDisparity
   void setDisparitySubscribers(const std::string& disp_info_topic);
   void displayDisparity(bool disp);
+  void setFilePath(const std::string& filePath);
 
   //Set to true/false
   bool disp_checkerboard;
@@ -40,6 +43,9 @@ private:
   bool m_disparity_set_up;
   bool m_disp_disparity;
 
+  std::string m_filePath;
+  int m_imageNumberSaved;
+
   ros::NodeHandle			m_nh;
 
   //Internal settings for the camera subscribing
@@ -49,6 +55,7 @@ private:
 
   image_transport::Subscriber		m_sub1;
   image_transport::Subscriber		m_sub2;
+  ros::Subscriber               m_sub_disparity;
 
   void display_callback1(const sensor_msgs::ImageConstPtr& msg);
   void display_callback2(const sensor_msgs::ImageConstPtr& msg);
@@ -61,18 +68,21 @@ private:
   //Used to convert sensor msgs to cv mat
   cv_bridge::CvImageConstPtr cv_ptr1;
   cv_bridge::CvImageConstPtr cv_ptr2;
+  cv_bridge::CvImagePtr      cv_ptr_disp;
 
   ros::Time m_img1_ts;
   ros::Time m_img2_ts;
 	
 
   //Subscribers for disparity
-  ros::Subscriber m_sub_disparity;
 
-  cv_bridge::CvImagePtr cv_ptr_disp;
   cv::Mat m_disparity;
 
   void disparity_callback(const stereo_msgs::DisparityImage& msg);
+
+  static void mouse_callback(int event, int x, int y, int flags, void* userdata);
+  void mouse_callback();
+  void saveImagePair(const cv::Mat &img1, const cv::Mat &img2, const std::string& filename1, const std::string&filename2);
 };
 
 

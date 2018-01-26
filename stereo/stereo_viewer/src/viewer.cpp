@@ -13,7 +13,9 @@ Viewer::Viewer (ros::NodeHandle nh, const std::string& image_topic1, int pos_x1,
   new_img(false),
   disp_checkerboard(false),
   m_disparity_set_up(false),
-  m_disp_disparity(false)
+  m_disp_disparity(false),
+  m_imageNumberSaved(0),
+  m_filePath("~/")
 {
   //Set up window 1 and subscriber 1
   m_sub1 = m_it.subscribe(m_image_topic1, 1, &Viewer::display_callback1, this);
@@ -28,11 +30,19 @@ Viewer::Viewer (ros::NodeHandle nh, const std::string& image_topic1, int pos_x1,
 
   cv::moveWindow(m_image_topic2.c_str(), pos_x2, pos_y2);
   cv::setWindowProperty(m_image_topic2.c_str(), cv::WND_PROP_FULLSCREEN, 1);
+
+  cv::setMouseCallback(m_image_topic1.c_str(), &Viewer::mouse_callback, this);
+  cv::setMouseCallback(m_image_topic2.c_str(), &Viewer::mouse_callback, this);
+
 }
 
 Viewer::~Viewer(){
   cv::destroyWindow(m_image_topic1);
   cv::destroyWindow(m_image_topic2);
+
+  if(m_disp_disparity){
+     cv::destroyWindow("Disparity");
+  }
 }
 
 void Viewer::run(){
@@ -65,6 +75,14 @@ void Viewer::displayDisparity(bool disp){
   else{
     cv::destroyWindow("Disparity");
   }
+}
+
+void Viewer::setFilePath(const std::string& filePath){
+  m_filePath = filePath;
+  if(m_filePath.back() != '/'){
+    m_filePath = m_filePath + '/';
+  }
+
 }
 
 void Viewer::loop(){
@@ -161,4 +179,49 @@ void Viewer::disparity_callback(const stereo_msgs::DisparityImage& msg){
   m_disparity = cv_ptr_disp->image;
 
   return;
+}
+
+void Viewer::mouse_callback(int event, int x, int y, int flags, void* userdata){
+  if(!userdata || event != cv::EVENT_LBUTTONDOWN ){
+    return;
+  }
+   Viewer *viewer = (Viewer*) userdata;
+   viewer->mouse_callback();
+}
+
+void Viewer::mouse_callback(){
+  //Make a deep clone so we can do other stuff while the computer saves the images
+  cv::Mat temp_img1 = m_img1.clone();
+  cv::Mat temp_img2 = m_img2.clone();
+
+   saveImagePair(temp_img1, temp_img2,
+                 m_filePath + "cam1_" + std::to_string(m_imageNumberSaved) + ".png",
+                 m_filePath + "cam2_" + std::to_string(m_imageNumberSaved) + ".png");
+
+   m_imageNumberSaved++;
+}
+
+void Viewer::saveImagePair(const cv::Mat &img1, const cv::Mat &img2, const std::string& filename1, const std::string&filename2){
+  std::cout << "---Saving Images---" << std::endl;
+  if(cv::imwrite(filename1, img1)){
+    std::cout << "Saved image " << filename1 << std::endl;
+  }
+  else{
+    std::cout << "Failed to save image " << filename1 << std::endl;
+  }
+  if(cv::imwrite(filename2, img2)){
+    std::cout << "Saved image " << filename2 << std::endl;
+    if( img1.empty()){
+      std::cout << "Image is empty" << std::endl;
+    }
+  }
+  else{
+    std::cout << "Failed to save image " << filename2 << std::endl;
+    if( img2.empty()){
+      std::cout << "Image is empty" << std::endl;
+    }
+  }
+
+  cv::waitKey(1);
+
 }

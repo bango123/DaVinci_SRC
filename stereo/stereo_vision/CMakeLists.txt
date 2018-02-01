@@ -5,6 +5,8 @@ project(stereo_vision)
 # add_compile_options(-std=c++11)
 set(CMAKE_CXX_STANDARD 14)
 
+find_package(OpenCV 3.4.0 REQUIRED)
+
 ## Find all of the dependency libraries
 #Catkin components
 find_package(catkin REQUIRED COMPONENTS
@@ -15,9 +17,6 @@ find_package(catkin REQUIRED COMPONENTS
   sensor_msgs
   std_msgs
 )
-
-#This uses OpenCV
-find_package(OpenCV REQUIRED)
 
 #We need qt5
 find_package(Qt5Core REQUIRED)
@@ -80,8 +79,8 @@ add_library(${PROJECT_NAME}
 
 #Link the required libraries for the new library we are making!
 target_link_libraries(${PROJECT_NAME}
-                      ${catkin_LIBRARIES}
                       ${OpenCV_LIBRARIES}
+                      ${catkin_LIBRARIES}
                       ${Qt5Core_LIBRARIES}
                       ${Boost_LIBRARIES})
 

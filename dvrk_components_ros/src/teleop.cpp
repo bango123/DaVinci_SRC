@@ -54,6 +54,10 @@ bool Teleop::reset_dvrk(){
     loop_rate.sleep();
   }
 
+  if(get_powerStatus()){
+      return false;
+  }
+
   iteration = 0;
 
   //Continue looping turn_on to DVRK till it is on
@@ -70,7 +74,7 @@ bool Teleop::reset_dvrk(){
     loop_rate.sleep();
   }
 
-  if(ros::ok()){
+  if(ros::ok() && get_powerStatus()){
     return true;
   }
   else{
@@ -95,7 +99,7 @@ bool Teleop::turn_onTeleop(){
     loop_rate.sleep();
   }
 
-  if(ros::ok()){
+  if(ros::ok() && get_teleopStatus()){
     return true;
   }
   else{
@@ -121,7 +125,7 @@ bool Teleop::set_ros_only_wait(bool rosOnly){
     loop_rate.sleep();
   }
 
-  if(ros::ok()){
+  if(ros::ok() && rosOnly == get_rosOnly()){
     return true;
   }
   else{

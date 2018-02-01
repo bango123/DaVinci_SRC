@@ -29,6 +29,29 @@ PSM::PSM(ros::NodeHandle nh, int psm, QObject *parent) : m_nh(nh), m_psm(psm), Q
     m_pub_set_robot_state         = m_nh.advertise<std_msgs::String>          (ros_node_string + "slave/set_robot_state",            1);
 }
 
+bool PSM::set_robot_state_and_wait(std::string robotState){
+    int iteration = 0;
+    ros::Rate loop_rate(0.2);
+
+    while( ros::ok() && get_robot_state() != robotState){
+        set_robot_state(robotState);
+        iteration++;
+
+        if(iteration > 10){
+          return false;
+        }
+
+        ros::spinOnce();
+        loop_rate.sleep();
+    }
+
+    if(ros::ok() && get_robot_state() == robotState ){
+        return true;
+    }
+    else{
+        return false;
+    }
+}
 
 void PSM::set_robot_state(std::string robotState){
   std_msgs::String msg;

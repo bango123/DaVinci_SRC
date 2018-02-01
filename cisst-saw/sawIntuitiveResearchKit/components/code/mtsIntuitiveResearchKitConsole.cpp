@@ -43,7 +43,6 @@ http://www.cisst.org/cisst/license.txt.
 
 #include <json/json.h>
 
-#include <ros/ros.h>
 
 
 CMN_IMPLEMENT_SERVICES(mtsIntuitiveResearchKitConsole);

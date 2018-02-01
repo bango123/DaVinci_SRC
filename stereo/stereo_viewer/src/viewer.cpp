@@ -1,8 +1,10 @@
 #include <stereo_viewer/viewer.h>
 
+#include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/calib3d/calib3d.hpp>
 
+#include <stdio.h>
 
 Viewer::Viewer (ros::NodeHandle nh, const std::string& image_topic1, int pos_x1, int pos_y1,  const std::string& image_topic2, int pos_x2, int pos_y2) :
   m_nh(nh),
@@ -15,7 +17,9 @@ Viewer::Viewer (ros::NodeHandle nh, const std::string& image_topic1, int pos_x1,
   m_disparity_set_up(false),
   m_disp_disparity(false),
   m_imageNumberSaved(0),
-  m_filePath("~/")
+  m_filePath("~/"),
+  m_rows(0),
+  m_cols(0)
 {
   //Set up window 1 and subscriber 1
   m_sub1 = m_it.subscribe(m_image_topic1, 1, &Viewer::display_callback1, this);
@@ -85,6 +89,11 @@ void Viewer::setFilePath(const std::string& filePath){
 
 }
 
+void Viewer::setResolution(int cols, int rows){
+    m_rows = rows;
+    m_cols = cols;
+}
+
 void Viewer::loop(){
 
 
@@ -124,8 +133,47 @@ void Viewer::loop(){
       cv::drawChessboardCorners(m_img2, cv::Size(8,6),corners_2, patternFound_2);
     }
 
-    cv::imshow( m_image_topic1, m_img1);
-    cv::imshow( m_image_topic2, m_img2);
+    //ROI the images based on the set resolution:
+    cv::Rect roi1;
+    if(m_rows < m_img1.rows && m_rows != 0){
+        roi1.y = (m_img1.rows - m_rows)/2;
+        roi1.height = m_rows;
+    }
+    else{
+        roi1.y = 0;
+        roi1.height = m_img1.rows;
+    }
+
+    if(m_cols < m_img1.cols && m_cols != 0){
+        roi1.x = (m_img1.cols - m_cols)/2;
+        roi1.width = m_cols;
+    }
+    else{
+        roi1.x = 0;
+        roi1.width = m_img1.cols;
+    }
+
+    cv::Rect roi2;
+    if(m_rows < m_img2.rows && m_rows != 0){
+        roi2.y = (m_img2.rows - m_rows)/2;
+        roi2.height = m_rows;
+    }
+    else{
+        roi2.y = 0;
+        roi2.height = m_img2.rows;
+    }
+
+    if(m_cols < m_img2.cols && m_cols != 0){
+        roi2.x = (m_img2.cols - m_cols)/2;
+        roi2.width = m_cols;
+    }
+    else{
+        roi2.x = 0;
+        roi2.width = m_img2.cols;
+    }
+
+    cv::imshow( m_image_topic1, m_img1(roi1));
+    cv::imshow( m_image_topic2, m_img2(roi2));
 
     //Display disparity
     if(m_disp_disparity && !m_disparity.empty()){

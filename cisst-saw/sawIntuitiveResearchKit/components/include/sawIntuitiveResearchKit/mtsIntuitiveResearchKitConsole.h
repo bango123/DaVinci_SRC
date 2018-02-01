@@ -26,8 +26,6 @@ http://www.cisst.org/cisst/license.txt.
 
 #include <sawIntuitiveResearchKit/sawIntuitiveResearchKitExport.h>
 
-#include <ros/ros.h>
-
 
 // for ROS console
 namespace dvrk {

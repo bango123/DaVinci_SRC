@@ -10,7 +10,7 @@
 	<param name="mkdir_tmp" command="mkdir -m 777 -p /media/arclab/NVME/$(arg filename)/camera" />
 	</node>
 
-        <node type="record" pkg="rosbag" name="camera_video_recorder" args="-o /media/arclab/NVME/$(arg filename)/camera_video/camera.bag --split --size=1000
+        <node type="image_view" pkg="image_view" name="camera_video_recorder" args="-o /media/arclab/NVME/$(arg filename)/camera_video/camera.bag --split --size=1000
                 -e /stereo/slave/(left|right)/image_raw">
         <param name="mkdir_tmp" command="mkdir -m 777 -p /media/arclab/NVME/$(arg filename)/camera" />
         </node>

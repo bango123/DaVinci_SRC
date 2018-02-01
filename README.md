@@ -1,13 +1,26 @@
 To the poor user who is trying to work with this system. There are a few things to note for the installation of the software.
 
-1) Put this software into a catkin workspace. Basically mkdir -p catkin_ws/src/ and then put the software there. From there attempt to build after getting all of the dependencies.
+Pre-install:
+Build OpenCV from source with CUDA. Must be >3.0
+For the ros-install. ENSURE it is built off the installed OpenCV. This can cause linking issues.
+http://wiki.ros.org/Installation/Source#kinetic.2BAC8-Installation.2BAC8-Source.Installation
+I recommend removing the opencv3 folder from the src/ before building
 
-2)Use this link as a starting point for building ciss-saw. The main thing to take away is the dependencies that you need to install. 
+1) Put this software into a catkin workspace. Basically mkdir -p catkin_ws/src/ and then put the software there. Then catkin init 
+From there attempt to build after getting all of the dependencies.
 
+2)Use these links as a starting point for building ciss-saw. The main thing to take away is set up the environment correctly!!!
+https://github.com/jhu-dvrk/sawIntuitiveResearchKit/wiki/Development-Environment
 https://github.com/jhu-cisst/cisst/wiki/Compiling-cisst-and-SAW-with-CMake#13-building-using-catkin-build-tools-for-ros
 
+sudo apt-get install libxml2-dev libraw1394-dev libncurses5-dev qtcreator swig libopenigtlink-dev flite cmake-curses-gui cmake-qt-gui libopencv-dev git subversion gfortran libcppunit-dev fluid
+sudo apt-get install qt5-default
+sudo apt-get install python-catkin-tools
 
-3) The video capture cards in the computer are from a Black Magic. We will be using the Decklink SDK to configure the video. So please install this dependency on the computer before buliding
+
+3) The video capture cards in the computer are from a Black Magic. We will be using the Decklink SDK to configure the video. So please install the black magic driver 10.9.10a2:
+https://www.blackmagicdesign.com/support/family/capture-and-playback
+
 
 To run the most up-to date stuff use launchfile:
     roscore

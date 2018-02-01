@@ -11,8 +11,11 @@ int main(int argc, char** argv)
   deckLinkCaptureDelegateL->startStream();
   deckLinkCaptureDelegateR->startStream();
 
-
-  while (ros::ok()){}
+  ros::Rate loop_rate(1);
+  while (ros::ok()){
+      ros::spinOnce();
+      loop_rate.sleep();
+  }
 
   deckLinkCaptureDelegateL->disconectDeckLink();
   deckLinkCaptureDelegateR->disconectDeckLink();

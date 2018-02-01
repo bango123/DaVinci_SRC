@@ -17,6 +17,7 @@ public:
   explicit PSM(ros::NodeHandle nh, int psm, QObject *parent = nullptr);
 
   //Set functions
+  bool set_robot_state_and_wait(std::string robotState);
   void set_robot_state(std::string robotState);
 
   //For these functions make sure the robot state is DVRK_POSITION_CARTESIAN

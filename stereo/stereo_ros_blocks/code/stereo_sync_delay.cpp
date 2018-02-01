@@ -86,9 +86,10 @@ int main(int argc, char **argv)
    ros::Time minTime;
    float numberOfFramesPublished = 0;
 
+   ros::Rate loop_rate(100);
   while (ros::ok())
   {
-    ros::spinOnce();
+
 
     //For the sync/slave side of the system. Will pass sync'ed images to delay buffer
     if(!messageBuffer_L_sync.empty() && !messageBuffer_R_sync.empty()){
@@ -155,8 +156,9 @@ int main(int argc, char **argv)
 
     }
 
-
-  }
+    ros::spinOnce();
+    loop_rate.sleep();
+  } //End of while loop
 
   return 0;
 }

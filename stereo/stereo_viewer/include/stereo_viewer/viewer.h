@@ -29,6 +29,8 @@ public:
   void displayDisparity(bool disp);
   void setFilePath(const std::string& filePath);
 
+  void setResolution(int rows, int cols);
+
   //Set to true/false
   bool disp_checkerboard;
 
@@ -64,6 +66,9 @@ private:
   bool new_img;
   cv::Mat m_img1;
   cv::Mat m_img2;
+
+  int m_rows;
+  int m_cols;
 
   //Used to convert sensor msgs to cv mat
   cv_bridge::CvImageConstPtr cv_ptr1;

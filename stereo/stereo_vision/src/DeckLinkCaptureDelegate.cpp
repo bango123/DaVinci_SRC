@@ -75,10 +75,8 @@ HRESULT DeckLinkCaptureDelegate::VideoInputFrameArrived(IDeckLinkVideoInputFrame
   m_FrameCount++;
 
   //First timestamp!!!
-  m_HeaderQueue.push_back(std_msgs::Header());
-  m_HeaderQueue.front().stamp = ros::Time::now();
-  //m_HeaderQueue.front().seq = m_FrameCount;
-  //m_HeaderQueue.front().frame_id = "0";
+  //m_HeaderQueue.push_back(std_msgs::Header());
+  //m_HeaderQueue.front().stamp = ros::Time::now();
 
   if (m_isLeftCamera){
     printf("--------- Left New Frame---------\n");
@@ -104,20 +102,21 @@ HRESULT DeckLinkCaptureDelegate::VideoInputFrameArrived(IDeckLinkVideoInputFrame
   void*	frameBytes;
   videoFrame->GetBytes(&frameBytes);
 
-  mutex.lock();
-  m_FrameQueue.push_back(cv::Mat(videoFrame->GetHeight(), videoFrame->GetWidth(), CV_8UC2, frameBytes, videoFrame->GetRowBytes()));
-  mutex.unlock();
+  //mutex.lock();
+  //m_FrameQueue.push_back(cv::Mat(videoFrame->GetHeight(), videoFrame->GetWidth(), CV_8UC2, frameBytes, videoFrame->GetRowBytes()));
+  //mutex.unlock();
 
   std::cout << "Size of buffer: " << m_FrameQueue.size() << std::endl;
 
   if( !workerThread->isRunning() && ros::ok()){
-    workerThread->setFrame( m_FrameQueue.front(), m_HeaderQueue.front());
+    //workerThread->setFrame( m_FrameQueue.front(), m_HeaderQueue.front());
+      workerThread->setFrame(cv::Mat(videoFrame->GetHeight(), videoFrame->GetWidth(), CV_8UC2, frameBytes, videoFrame->GetRowBytes()), std_msgs::Header());
     workerThread->start();
 
-    mutex.lock();
-    m_FrameQueue.pop_front();
-    mutex.unlock();
-    m_HeaderQueue.pop_front();
+//    mutex.lock();
+//    m_FrameQueue.pop_front();
+//    mutex.unlock();
+//    m_HeaderQueue.pop_front();
   }
 
   if( m_FrameCount%30 == 0){

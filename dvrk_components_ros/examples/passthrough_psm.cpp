@@ -170,11 +170,11 @@ int main(int argc, char **argv)
     return 0;
   }
 
-  if(!psm1.set_robot_state_and_wait("DVRK_POSITION_GOAL_CARTESIAN")){
+  if(!psm1.set_robot_state_and_wait("DVRK_POSITION_CARTESIAN")){
     return 0;
   }
 
-  if(!psm2.set_robot_state_and_wait("DVRK_POSITION_GOAL_CARTESIAN")){
+  if(!psm2.set_robot_state_and_wait("DVRK_POSITION_CARTESIAN")){
     return 0;
   }
 

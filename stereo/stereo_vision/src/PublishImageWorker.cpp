@@ -50,7 +50,6 @@ void PublishImageWorker::setFrame(const cv::Mat frame, const std_msgs::Header he
 
   m_frame = frame;
   m_header = header;
-  //mutex.unlock();
 }
 
 void PublishImageWorker::run() {
@@ -73,9 +72,6 @@ void PublishImageWorker::run() {
 
   ci->height = m_frame.rows;
   ci->width  = m_frame.cols;
-
-  //sensor_msgs::ImageConstPtr ptr_out_msg = out_msg.toImageMsg();
-  //sensor_msgs::CameraInfoConstPtr ptr_ci = ci;
 
   image_pub_.publish(out_msg.toImageMsg(), ci);
   m_frame.release();

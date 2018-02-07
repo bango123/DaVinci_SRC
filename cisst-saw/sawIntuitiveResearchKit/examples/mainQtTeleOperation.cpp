@@ -34,7 +34,7 @@ http://www.cisst.org/cisst/license.txt.
 #include <sawIntuitiveResearchKit/mtsIntuitiveResearchKitArmQtWidget.h>
 #include <sawControllers/mtsTeleOperation.h>
 #include <sawControllers/mtsTeleOperationQtWidget.h>
-#include <sawTextToSpeech/mtsTextToSpeech.h>
+//#include <sawTextToSpeech/mtsTextToSpeech.h>
 
 #include <QTabWidget>
 
@@ -199,11 +199,11 @@ int main(int argc, char ** argv)
     // connect teleGUI to tele
     componentManager->Connect("teleGUI", "TeleOperation", "tele", "Setting");
 
-    // TextToSpeech
-    mtsTextToSpeech* textToSpeech = new mtsTextToSpeech;
-    textToSpeech->AddInterfaceRequiredForEventString("Error", "Error");
-    componentManager->AddComponent(textToSpeech);
-    componentManager->Connect(textToSpeech->GetName(), "Error", psm->Name(), "Robot");
+//    // TextToSpeech
+//    mtsTextToSpeech* textToSpeech = new mtsTextToSpeech;
+//    textToSpeech->AddInterfaceRequiredForEventString("Error", "Error");
+//    componentManager->AddComponent(textToSpeech);
+//    componentManager->Connect(textToSpeech->GetName(), "Error", psm->Name(), "Robot");
 
     // connect teleop to Master + Slave + Clutch
     componentManager->Connect("tele", "Master", mtm->Name(), "Robot");

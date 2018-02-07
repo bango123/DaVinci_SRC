@@ -142,6 +142,7 @@ include_directories(
 ## The recommended prefix ensures that target names across packages don't collide
 add_executable(bag2vid code/stereo_bag2vid.cpp)
 add_executable(sync_delay code/stereo_sync_delay.cpp)
+add_executable(stereo_videorecorder code/stereo_videorecorder.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -166,6 +167,12 @@ target_link_libraries(sync_delay
     ${Boost_LIBRARIES}
  )
 
+target_link_libraries(stereo_videorecorder
+    ${catkin_LIBRARIES}
+    ${OpenCV_LIBS}
+    ${Boost_LIBRARIES}
+ )
+
 #############
 ## Install ##
 #############
@@ -181,7 +188,7 @@ target_link_libraries(sync_delay
 # )
 
 ## Mark executables and/or libraries for installation
- install(TARGETS bag2vid sync_delay
+ install(TARGETS bag2vid sync_delay stereo_videorecorder
    ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
    LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
    RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}

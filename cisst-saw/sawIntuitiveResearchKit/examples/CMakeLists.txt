@@ -44,10 +44,10 @@ if (cisst_FOUND_AS_REQUIRED)
   find_package (sawControllers          1.4.0 REQUIRED)
   find_package (sawConstraintController 1.1.0 REQUIRED)
   find_package (sawIntuitiveResearchKit 1.4.0 REQUIRED)
-  find_package (sawTextToSpeech REQUIRED)
+  #find_package (sawTextToSpeech REQUIRED)
 
   if (sawRobotIO1394_FOUND AND sawControllers_FOUND
-      AND sawIntuitiveResearchKit_FOUND AND sawTextToSpeech_FOUND
+      AND sawIntuitiveResearchKit_FOUND #AND sawTextToSpeech_FOUND
       AND sawConstraintController_FOUND)
 
     # saw components configuration
@@ -60,8 +60,8 @@ if (cisst_FOUND_AS_REQUIRED)
     link_directories (${sawRobotIO1394_LIBRARY_DIR}
                       ${sawIntuitiveResearchKit_LIBRARY_DIR}
                       ${sawControllers_LIBRARY_DIR}
-                      ${sawConstraintController_LIBRARY_DIR}
-                      ${sawTextToSpeech_LIBRARY_DIR})
+                      ${sawConstraintController_LIBRARY_DIR})
+                      #${sawTextToSpeech_LIBRARY_DIR})
 
     # examples using Qt
     if (CISST_HAS_QT)
@@ -73,8 +73,8 @@ if (cisst_FOUND_AS_REQUIRED)
       target_link_libraries (sawIntuitiveResearchKitQtTeleOperation
                              ${sawRobotIO1394_LIBRARIES}
                              ${sawIntuitiveResearchKit_LIBRARIES}
-                             ${sawControllers_LIBRARIES}
-                             ${sawTextToSpeech_LIBRARIES})
+                             ${sawControllers_LIBRARIES})
+                             #${sawTextToSpeech_LIBRARIES})
       # link against cisst libraries (and dependencies)
       cisst_target_link_libraries (sawIntuitiveResearchKitQtTeleOperation ${REQUIRED_CISST_LIBRARIES})
 
@@ -85,8 +85,8 @@ if (cisst_FOUND_AS_REQUIRED)
       target_link_libraries (sawIntuitiveResearchKitQtHaptics
                              ${sawRobotIO1394_LIBRARIES}
                              ${sawIntuitiveResearchKit_LIBRARIES}
-                             ${sawControllers_LIBRARIES}
-                             ${sawTextToSpeech_LIBRARIES})
+                             ${sawControllers_LIBRARIES})
+                             #${sawTextToSpeech_LIBRARIES})
       # link against cisst libraries (and dependencies)
       cisst_target_link_libraries (sawIntuitiveResearchKitQtHaptics ${REQUIRED_CISST_LIBRARIES})
 
@@ -100,8 +100,8 @@ if (cisst_FOUND_AS_REQUIRED)
         target_link_libraries (sawIntuitiveResearchKitQtTeleOperationJSON
                                ${sawRobotIO1394_LIBRARIES}
                                ${sawIntuitiveResearchKit_LIBRARIES}
-                               ${sawControllers_LIBRARIES}
-                               ${sawTextToSpeech_LIBRARIES})
+                               ${sawControllers_LIBRARIES})
+                               #${sawTextToSpeech_LIBRARIES})
         # link against cisst libraries (and dependencies)
         cisst_target_link_libraries (sawIntuitiveResearchKitQtTeleOperationJSON ${REQUIRED_CISST_LIBRARIES})
 

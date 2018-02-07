@@ -12,4 +12,4 @@
 cmake_minimum_required (VERSION 2.8)
 
 add_subdirectory (components)
-add_subdirectory (examples)
+#add_subdirectory (examples)

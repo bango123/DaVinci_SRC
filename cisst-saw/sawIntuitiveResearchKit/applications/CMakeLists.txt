@@ -44,25 +44,24 @@ if (cisst_FOUND_AS_REQUIRED)
   find_package (sawControllers          1.4.0 REQUIRED)
   find_package (sawConstraintController 1.1.0 REQUIRED)
   find_package (sawIntuitiveResearchKit 1.4.0 REQUIRED)
-  find_package (sawTextToSpeech REQUIRED)
- # find_package (Booost                        REQUIRED)
+  #find_package (sawTextToSpeech REQUIRED)
 
   if (sawRobotIO1394_FOUND AND sawControllers_FOUND
-      AND sawIntuitiveResearchKit_FOUND AND sawTextToSpeech_FOUND
+      AND sawIntuitiveResearchKit_FOUND #AND sawTextToSpeech_FOUND
       AND sawConstraintController_FOUND)
 
     # saw components configuration
     include_directories (${sawRobotIO1394_INCLUDE_DIR}
                          ${sawIntuitiveResearchKit_INCLUDE_DIR}
                          ${sawControllers_INCLUDE_DIR}
-                         ${sawConstrainController_INCLUDE_DIR}
-                         ${sawTextToSpeech_INCLUDE_DIR})
+                         ${sawConstrainController_INCLUDE_DIR})
+                         #${sawTextToSpeech_INCLUDE_DIR})
 
     link_directories (${sawRobotIO1394_LIBRARY_DIR}
                       ${sawIntuitiveResearchKit_LIBRARY_DIR}
                       ${sawControllers_LIBRARY_DIR}
-                      ${sawConstraintController_LIBRARY_DIR}
-                      ${sawTextToSpeech_LIBRARY_DIR})
+                      ${sawConstraintController_LIBRARY_DIR})
+                      #${sawTextToSpeech_LIBRARY_DIR})
 
     # main program used to calibrate the MTM gripper
     add_executable (sawIntuitiveResearchKitGripperCalibration GripperCalibration.cpp)
@@ -97,8 +96,8 @@ if (cisst_FOUND_AS_REQUIRED)
       target_link_libraries (sawIntuitiveResearchKitQtArm
                              ${sawIntuitiveResearchKit_LIBRARIES}
                              ${sawRobotIO1394_LIBRARIES}
-                             ${sawControllers_LIBRARIES}
-                             ${sawTextToSpeech_LIBRARIES})
+                             ${sawControllers_LIBRARIES})
+                             #${sawTextToSpeech_LIBRARIES})
 #      # link against cisst libraries (and dependencies)
       cisst_target_link_libraries (sawIntuitiveResearchKitQtArm ${REQUIRED_CISST_LIBRARIES})
 
@@ -112,8 +111,8 @@ if (cisst_FOUND_AS_REQUIRED)
         target_link_libraries (sawIntuitiveResearchKitQtConsoleJSON
                                ${sawIntuitiveResearchKit_LIBRARIES}
                                ${sawRobotIO1394_LIBRARIES}
-                               ${sawControllers_LIBRARIES}
-                               ${sawTextToSpeech_LIBRARIES})
+                               ${sawControllers_LIBRARIES})
+                               #${sawTextToSpeech_LIBRARIES})
         # link against cisst libraries (and dependencies)
         cisst_target_link_libraries (sawIntuitiveResearchKitQtConsoleJSON ${REQUIRED_CISST_LIBRARIES})
 

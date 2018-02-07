@@ -56,6 +56,7 @@ int main(int argc, char **argv)
       slop =  boost::lexical_cast<int>(argv[i+1]);
     }
   }
+
   std::cout<< "Camera Sync: Set buffer size to: " << sizeOfBuffer << std::endl;
   std::cout<< "Camera Sync: Slop set to       : " << slop << std::endl;
 
@@ -89,8 +90,6 @@ int main(int argc, char **argv)
    ros::Rate loop_rate(100);
   while (ros::ok())
   {
-
-
     //For the sync/slave side of the system. Will pass sync'ed images to delay buffer
     if(!messageBuffer_L_sync.empty() && !messageBuffer_R_sync.empty()){
        //First case is both are within slop

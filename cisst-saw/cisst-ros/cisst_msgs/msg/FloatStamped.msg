@@ -1,2 +1,2 @@
 Header header
-float32 data
+float64 data

@@ -31,7 +31,7 @@ PSM::PSM(ros::NodeHandle nh, int psm, QObject *parent) : m_nh(nh), m_psm(psm), Q
 
 bool PSM::set_robot_state_and_wait(std::string robotState){
     int iteration = 0;
-    ros::Rate loop_rate(0.2);
+    ros::Rate loop_rate(1);
 
     while( ros::ok() && get_robot_state() != robotState){
         set_robot_state(robotState);
@@ -151,12 +151,28 @@ geometry_msgs::PoseStamped PSM::get_master_cart_pos(){
   return m_master_cart_pos;
 }
 
+cisst_msgs::FloatStamped PSM::get_master_jaw(){
+    cisst_msgs::FloatStamped jawMsg;
+    jawMsg.header = m_master_joint_angles.header;
+    jawMsg.data   = m_master_joint_angles.position[6];
+
+    return jawMsg;
+}
+
 sensor_msgs::JointState PSM::get_slave_joint_angles(){
   return m_slave_joint_angles;
 }
 
 geometry_msgs::PoseStamped PSM::get_slave_cart_pos(){
   return m_slave_cart_pos;
+}
+
+cisst_msgs::FloatStamped PSM::get_slave_jaw(){
+    cisst_msgs::FloatStamped jawMsg;
+    jawMsg.header = m_slave_joint_angles.header;
+    jawMsg.data   = m_slave_joint_angles.position[6];
+
+    return jawMsg;
 }
 
 void PSM::master_target_jawPosCallback(const cisst_msgs::FloatStamped& msg){

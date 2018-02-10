@@ -47,7 +47,7 @@ bool Teleop::reset_dvrk(){
     set_powerStatus(false);
 
     iteration++;
-    if(iteration > 3){
+    if(iteration > 10){
       break;
     }
     ros::spinOnce();
@@ -83,7 +83,7 @@ bool Teleop::reset_dvrk(){
 
 bool Teleop::turn_onTeleop(){
   int iteration = 0;
-  ros::Rate loop_rate(0.2);
+  ros::Rate loop_rate(0.5);
 
   //Continue looping set_teleopStatus till we have feedback it is on!
   //Loop continues every 2 seconds and only tries 5 times
@@ -91,7 +91,7 @@ bool Teleop::turn_onTeleop(){
     set_teleopStatus(true);
 
     iteration++;
-    if(iteration > 5){
+    if(iteration > 10){
       return false;
     }
 

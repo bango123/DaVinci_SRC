@@ -19,6 +19,8 @@ find_package( OpenCV REQUIRED )
 
 find_package(Qt5Core REQUIRED)
 
+find_package(Eigen3 REQUIRED )
+
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
 
@@ -57,7 +59,7 @@ find_package(Qt5Core REQUIRED)
 #   FILES
 #   Message1.msg
 #   Message2.msg
-# )
+# )Eigen3::Eigen
 
 ## Generate services in the 'srv' folder
 # add_service_files(
@@ -126,6 +128,7 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
   ${Qt5Core_INCLUDE_DIRS}
   ${OpenCV_INCLUDE_DIRS}
+  ${EIGEN3_INCLUDE_DIR}
 )
 
 set (CMAKE_AUTOMOC ON)
@@ -148,7 +151,10 @@ add_library(${PROJECT_NAME}
 ## The recommended prefix ensures that target names across packages don't collide
 add_executable(passthrough_psm examples/passthrough_psm.cpp)
 add_executable(test_goal_psm examples/test_goal_psm.cpp)
-add_executable(calibrate_psm examples/calibrate_psm.cpp)
+add_executable(calibrate_psm_to_env examples/calibrate_psm_to_env.cpp)
+add_executable(csvwriter_psm examples/csvwriter_psm.cpp)
+add_executable(recording_robot examples/recording_robot.cpp)
+
 
 
 ## Rename C++ executable without prefix
@@ -173,11 +179,14 @@ target_link_libraries(passthrough_psm
 target_link_libraries(test_goal_psm
    ${PROJECT_NAME})
 
-target_link_libraries(calibrate_psm
-   ${PROJECT_NAME})
+target_link_libraries(calibrate_psm_to_env
+    ${PROJECT_NAME})
 
-target_link_libraries(calibrate_psm
-    ${OpenCV_LIBS})
+target_link_libraries(csvwriter_psm
+    ${PROJECT_NAME})
+
+target_link_libraries(recording_robot
+    ${PROJECT_NAME})
 
 #############
 ## Install ##
@@ -194,7 +203,7 @@ target_link_libraries(calibrate_psm
 # )
 
 ## Mark executables and/or libraries for installation
- install(TARGETS ${PROJECT_NAME} passthrough_psm test_goal_psm calibrate_psm
+ install(TARGETS ${PROJECT_NAME} passthrough_psm test_goal_psm calibrate_psm_to_env csvwriter_psm recording_robot
    ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
    LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
    RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}

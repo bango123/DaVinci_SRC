@@ -60,8 +60,10 @@ public:
   //Use Joint angles to get jaw position
   sensor_msgs  ::JointState      get_master_joint_angles();
   geometry_msgs::PoseStamped     get_master_cart_pos();
+  cisst_msgs   ::FloatStamped    get_master_jaw();
   sensor_msgs  ::JointState      get_slave_joint_angles();
   geometry_msgs::PoseStamped     get_slave_cart_pos();
+  cisst_msgs   ::FloatStamped    get_slave_jaw();
 
 //Signals that can be connected to!! Can be useful if you want to use stuff more as a notification/callback in your code.
 //These signals are emitted after the callback from the corresponding subscribed topic occurs.

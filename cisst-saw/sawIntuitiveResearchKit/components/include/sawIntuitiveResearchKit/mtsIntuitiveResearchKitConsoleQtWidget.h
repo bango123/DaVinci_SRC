@@ -27,8 +27,12 @@ class QTextEdit;
 class QTabWidget;
 class QDoubleSpinBox;
 class QCheckBox;
+class QProcess;
+class QPlainTextEdit;
 
+#include <QProcess>
 #include <QWidget>
+#include <QPlainTextEdit>
 
 class mtsIntuitiveResearchKitConsoleQtWidget: public QWidget, public mtsComponent
 {
@@ -59,6 +63,7 @@ private slots:
     void SlotHome(void);
     void SlotTeleopStart(void);
     void SlotTeleopStop(void);
+    void SlotToggleRecord(void);
     void SlotSetScale(double scale);
     void SlotSetDelay(double delay);
     void SlotRosOnly(bool rosOnly);
@@ -92,12 +97,16 @@ protected:
     QPushButton * QPBHome;
     QPushButton * QPBTeleopStart;
     QPushButton * QPBTeleopStop;
+    QPushButton * QPBRecord;
     QDoubleSpinBox * QSBScale;
     QDoubleSpinBox * QSBDelay;
     QTabWidget * QTWidgets;
     QTextEdit * QTEMessages;
-
     QCheckBox * QCBRosOnly;
+
+    bool m_isRecording;
+    QPlainTextEdit * QTFileName;
+    QProcess * QProcess_Recording;
 };
 
 CMN_DECLARE_SERVICES_INSTANTIATION(mtsIntuitiveResearchKitConsoleQtWidget);

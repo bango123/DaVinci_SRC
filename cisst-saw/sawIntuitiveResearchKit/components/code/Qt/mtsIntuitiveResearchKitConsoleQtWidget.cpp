@@ -46,8 +46,11 @@ http://www.cisst.org/cisst/license.txt.
 CMN_IMPLEMENT_SERVICES(mtsIntuitiveResearchKitConsoleQtWidget);
 
 mtsIntuitiveResearchKitConsoleQtWidget::mtsIntuitiveResearchKitConsoleQtWidget(const std::string & componentName):
-    mtsComponent(componentName)
+    mtsComponent(componentName), m_isRecording(false)
 {
+    QObject *parent;
+    QProcess_Recording = new QProcess(parent);
+
     mtsInterfaceRequired * interfaceRequired = AddInterfaceRequired("Main");
     if (interfaceRequired) {
         interfaceRequired->AddFunction("PowerOff", Console.PowerOff);
@@ -137,6 +140,21 @@ void mtsIntuitiveResearchKitConsoleQtWidget::SlotTeleopStop(void)
     Console.TeleopEnable(false);
 }
 
+void mtsIntuitiveResearchKitConsoleQtWidget::SlotToggleRecord(void){
+    m_isRecording = !m_isRecording;
+
+    if(m_isRecording){
+        QString command = "roslaunch dvrk_robot dvrk_camera_console_record.launch filepath:=" + QTFileName->toPlainText();
+        QProcess_Recording->start(command);
+
+        QPBRecord->setText("Stop Recording");
+    }
+    else{
+        QProcess_Recording->terminate();
+        QPBRecord->setText("Start Recording");
+    }
+}
+
 void mtsIntuitiveResearchKitConsoleQtWidget::SlotSetScale(double scale)
 {
     Console.SetScale(scale);
@@ -183,14 +201,17 @@ void mtsIntuitiveResearchKitConsoleQtWidget::setupUi(void)
     boxLayout->addWidget(teleopBox);
     QVBoxLayout * teleopLayout = new QVBoxLayout();
     teleopBox->setLayout(teleopLayout);
+
     QPBTeleopStart = new QPushButton("Start");
     QPBTeleopStart->setToolTip("ctrl + T");
     new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_T), this, SLOT(SlotTeleopStart()));
     teleopLayout->addWidget(QPBTeleopStart);
+
     QPBTeleopStop = new QPushButton("Stop");
     QPBTeleopStop->setToolTip("ctrl + S");
     new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_S), this, SLOT(SlotTeleopStop()));
     teleopLayout->addWidget(QPBTeleopStop);
+
     QSBScale = new QDoubleSpinBox();
     QSBScale->setDecimals(4);
     QSBScale->setRange(0.05, 1.0);
@@ -210,6 +231,14 @@ void mtsIntuitiveResearchKitConsoleQtWidget::setupUi(void)
     QCBRosOnly = new QCheckBox("Ros Only");
     QCBRosOnly->setChecked(false);
     teleopLayout->addWidget(QCBRosOnly);
+
+    QTFileName = new QPlainTextEdit("Filename");
+    teleopLayout->addWidget(QTFileName);
+
+    QPBRecord = new QPushButton("Start Recording");
+    QPBRecord->setToolTip("ctrl + R");
+    new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_R), this, SLOT(SlotToggleRecord()));
+    teleopLayout->addWidget(QPBRecord);
 
     boxLayout->addStretch(100);
     buttonsWidget->setFixedWidth(buttonsWidget->sizeHint().width());
@@ -250,6 +279,8 @@ void mtsIntuitiveResearchKitConsoleQtWidget::setupUi(void)
             this, SLOT(SlotTeleopStart()));
     connect(QPBTeleopStop, SIGNAL(clicked()),
             this, SLOT(SlotTeleopStop()));
+    connect(QPBRecord, SIGNAL(clicked()),
+            this, SLOT(SlotToggleRecord()));
 
     connect(QSBScale, SIGNAL(valueChanged(double)),
             this, SLOT(SlotSetScale(double)));
@@ -276,6 +307,7 @@ void mtsIntuitiveResearchKitConsoleQtWidget::setupUi(void)
             this, SLOT(SlotTextChanged()));
 
     new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_Q), this, SLOT(close()));
+
 }
 
 void mtsIntuitiveResearchKitConsoleQtWidget::SlotScaleEventHandler(double scale)

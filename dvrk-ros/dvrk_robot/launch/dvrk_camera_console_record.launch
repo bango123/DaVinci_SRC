@@ -1,8 +1,8 @@
 <launch>
         <arg name="filepath" default = "data_collection"/>
 	
-        <node type="record" pkg="rosbag" name="robot_recorder"  args="-o /media/arclab/NVME/$(arg filepath)/robot/robot.bag --split --size=1000 -e /dvrk(.*)">
-        <param name="mkdir_tmp" command="mkdir -m 777 -p /media/arclab/NVME/$(arg filepath)/robot" />
+        <node type="record" pkg="rosbag" name="robot_recorder"  args="-o /media/arclab/NVME/$(arg filepath)/robot_bag/robot.bag --split --size=1000 -e /dvrk(.*)">
+        <param name="mkdir_tmp" command="mkdir -m 777 -p /media/arclab/NVME/$(arg filepath)/robot_bag" />
 	</node>
 
         <node type="record" pkg="rosbag" name="camera_recorder" args="-o /media/arclab/NVME/$(arg filepath)/camera_bags/ camera.bag --split --size=1000
@@ -18,6 +18,10 @@
         <node type="video_recorder" pkg="image_view" name="camera_video_recorderR" args="_filename:=/media/arclab/NVME/$(arg filepath)/camera_vids/right_cam.avi
         _fps:=30 image:=/stereo/slave/right/image_raw">
         <param name="mkdir_tmp" command="mkdir -m 777 -p /media/arclab/NVME/$(arg filepath)/camera_vids" />
+        </node>
+
+        <node type="csvwriter_psm" pkg="dvrk_components_ros" name="csvWriter_psm" args="/media/arclab/NVME/$(arg filepath)/robot_csv/">
+        <param name="mkdir_tmp" command="mkdir -m 777 -p /media/arclab/NVME/$(arg filepath)/robot_csv" />
         </node>
 
 </launch>

@@ -170,27 +170,27 @@ int main(int argc, char **argv)
     return 0;
   }
 
-  if(!psm1.set_robot_state_and_wait("DVRK_POSITION_CARTESIAN")){
-    return 0;
-  }
+//  if(!psm1.set_robot_state_and_wait("DVRK_POSITION_CARTESIAN")){
+//    return 0;
+//  }
 
-  if(!psm2.set_robot_state_and_wait("DVRK_POSITION_CARTESIAN")){
-    return 0;
-  }
+//  if(!psm2.set_robot_state_and_wait("DVRK_POSITION_CARTESIAN")){
+//    return 0;
+//  }
 
 
   //Passthrough code
   while(ros::ok()){
     if(teleop.get_operatorPresent() && teleop.get_powerStatus() && teleop.get_teleopStatus()){
-      psm1.set_master_jaw(psm1.get_target_master_jaw());
-      psm1.set_master_cart_pos(psm1.get_target_master_cart_pos());
-      psm1.set_slave_jaw(psm1.get_target_slave_jaw());
-      psm1.set_slave_cart_pos(psm1.get_target_slave_cart_pos());
+//      psm1.set_master_jaw(psm1.get_target_master_jaw());
+//      psm1.set_master_cart_pos(psm1.get_target_master_cart_pos());
+//      psm1.set_slave_jaw(psm1.get_target_slave_jaw());
+//      psm1.set_slave_cart_pos(psm1.get_target_slave_cart_pos());
 
-      psm2.set_master_jaw(psm2.get_target_master_jaw());
-      psm2.set_master_cart_pos(psm2.get_target_master_cart_pos());
-      psm2.set_slave_jaw(psm2.get_target_slave_jaw());
-      psm2.set_slave_cart_pos(psm2.get_target_slave_cart_pos());
+//      psm2.set_master_jaw(psm2.get_target_master_jaw());
+//      psm2.set_master_cart_pos(psm2.get_target_master_cart_pos());
+//      psm2.set_slave_jaw(psm2.get_target_slave_jaw());
+//      psm2.set_slave_cart_pos(psm2.get_target_slave_cart_pos());
     }
 
     ros::spinOnce();

@@ -5,8 +5,8 @@ int main(int argc, char** argv)
 {
   ros::init(argc, argv, "stereo_publisher");
 
-  DeckLinkCaptureDelegate* deckLinkCaptureDelegateL = new DeckLinkCaptureDelegate(true);
-  DeckLinkCaptureDelegate* deckLinkCaptureDelegateR = new DeckLinkCaptureDelegate(false);
+  DeckLinkCaptureDelegate* deckLinkCaptureDelegateL = new DeckLinkCaptureDelegate(ros::NodeHandle("stereo/left") , true);
+  DeckLinkCaptureDelegate* deckLinkCaptureDelegateR = new DeckLinkCaptureDelegate(ros::NodeHandle("stereo/right"), false);
 
   deckLinkCaptureDelegateL->startStream();
   deckLinkCaptureDelegateR->startStream();

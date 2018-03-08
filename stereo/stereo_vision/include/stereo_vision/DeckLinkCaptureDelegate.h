@@ -5,13 +5,12 @@
 #include <stereo_vision/PublishImageWorker.h>
 
 #include <opencv2/core/core.hpp>
-#include <QMutex>
-#include <QObject>
-#include <boost/circular_buffer.hpp>
-#include <boost/shared_array.hpp>
 #include <sensor_msgs/image_encodings.h>
-#include <ros/ros.h>
 
+#include <ros/ros.h>
+#include <image_transport/image_transport.h>
+#include <image_transport/camera_publisher.h>
+#include <camera_info_manager/camera_info_manager.h>
 
 
 class DeckLinkCaptureDelegate : public IDeckLinkInputCallback
@@ -19,21 +18,11 @@ class DeckLinkCaptureDelegate : public IDeckLinkInputCallback
 
 public:
   //Delay flag is ms of added delay before image is published
-  DeckLinkCaptureDelegate(bool isLeftCamera);
-
-  boost::circular_buffer<cv::Mat> m_FrameQueue            = boost::circular_buffer<cv::Mat>(10);
-  boost::circular_buffer<std_msgs::Header> m_HeaderQueue  = boost::circular_buffer<std_msgs::Header>(10);
-
-  bool                      m_isLeftCamera;
-
-  bool                      m_streamRunning           = false;
-  //clock_t                   m_timeOfLastFrame;
-  ros::Time                 m_timeOfLastFrame;
-  int                       m_FrameCount              = 0;
+  DeckLinkCaptureDelegate(ros::NodeHandle nh, bool isLeftCamera);
 
   virtual HRESULT STDMETHODCALLTYPE QueryInterface(REFIID iid, LPVOID *ppv) { return E_NOINTERFACE; }
-  virtual ULONG STDMETHODCALLTYPE AddRef(void);
-  virtual ULONG STDMETHODCALLTYPE  Release(void);
+  virtual ULONG   STDMETHODCALLTYPE AddRef(void);
+  virtual ULONG   STDMETHODCALLTYPE Release(void);
 
   virtual HRESULT STDMETHODCALLTYPE VideoInputFrameArrived(IDeckLinkVideoInputFrame*, IDeckLinkAudioInputPacket*);
   virtual HRESULT STDMETHODCALLTYPE VideoInputFormatChanged(BMDVideoInputFormatChangedEvents, IDeckLinkDisplayMode*,
@@ -46,7 +35,11 @@ private:
   int connectToDeckLink(void);
   int setUpCallBack(void);
 
-  PublishImageWorker*    workerThread;
+  bool m_isLeftCamera;
+
+  bool m_streamRunning = false;
+
+  //PublishImageWorker*    workerThread;
 
   int32_t                   m_refCount;
   //"DeckLink 4K Extreme" for left camera
@@ -55,11 +48,17 @@ private:
 
   IDeckLink*                m_deckLink                = NULL;
   IDeckLinkInput*           m_deckLinkInput           = NULL;
-  IDeckLinkDisplayMode*			m_displayMode             = NULL;
+  IDeckLinkDisplayMode*		m_displayMode             = NULL;
 
   const char*               m_displayModeName         ="1080i59.94";
   BMDPixelFormat            m_pixelFormat             = bmdFormat8BitYUV;
   BMDVideoInputFlags        m_inputFlags              = bmdVideoInputFlagDefault;
+
+  //Ros stuff
+  ros::NodeHandle                         m_nh;
+  image_transport::ImageTransport         m_it;
+  image_transport::CameraPublisher        m_image_pub;
+  camera_info_manager::CameraInfoManager  m_cinfo;
 
   QMutex mutex;
 };

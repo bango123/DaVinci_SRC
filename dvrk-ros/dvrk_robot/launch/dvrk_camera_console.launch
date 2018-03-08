@@ -1,0 +1,18 @@
+<launch>
+
+    <node name="stereo_publisher"   pkg="stereo_vision"      type="stereo_publisher"                                    />
+
+    <node name="stereo_sync_delay"  pkg="stereo_ros_blocks"  type="sync_delay"                                          />
+
+    <node name="image_viewer"       pkg="stereo_viewer"      type="stereo_viewer_dvrk" />
+
+
+
+    <node name="dvrk_robot"         pkg="dvrk_robot"         type="dvrk_console_json"
+    args="  -j /home/arclab/catkin_ws/src/cisst-saw/sawIntuitiveResearchKit/share/ucsd-dVRK/console-MTMR-PSM1-MTML-PSM2-Teleop.json
+            -i /home/arclab/catkin_ws/src/cisst-saw/sawIntuitiveResearchKit/share/ros-io-PSM2.json
+            -i /home/arclab/catkin_ws/src/cisst-saw/sawIntuitiveResearchKit/share/ros-io-PSM1.json
+            -i /home/arclab/catkin_ws/src/cisst-saw/sawIntuitiveResearchKit/share/ros-io-MTML.json
+            -i /home/arclab/catkin_ws/src/cisst-saw/sawIntuitiveResearchKit/share/ros-io-MTMR.json" />
+
+</launch>

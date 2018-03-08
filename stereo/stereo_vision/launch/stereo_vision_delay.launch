@@ -1,6 +1,7 @@
 <launch>
 
-    <node name="stereo_publisher"   pkg="stereo_vision"      type="stereo_publisher"                                    />
+    <node name="image_publisher_l"   pkg="stereo_vision"      type="image_publisher" args="l"                            />
+    <node name="image_publisher_r"   pkg="stereo_vision"      type="image_publisher" args="r"                            />
 
     <node name="stereo_sync_delay"  pkg="stereo_ros_blocks"  type="sync_delay"                                          />
 

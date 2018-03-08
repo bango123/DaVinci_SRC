@@ -114,7 +114,7 @@ catkin_package(
   INCLUDE_DIRS include
   LIBRARIES dvrk_components_ros
   CATKIN_DEPENDS cisst_msgs roscpp sensor_msgs
-  DEPENDS OpenCV
+  DEPENDS OpenCV Eigen3
 )
 
 ###########
@@ -151,10 +151,13 @@ add_library(${PROJECT_NAME}
 ## The recommended prefix ensures that target names across packages don't collide
 add_executable(passthrough_psm examples/passthrough_psm.cpp)
 add_executable(test_goal_psm examples/test_goal_psm.cpp)
-add_executable(calibrate_psm_to_env examples/calibrate_psm_to_env.cpp)
 add_executable(csvwriter_psm examples/csvwriter_psm.cpp)
 add_executable(recording_robot examples/recording_robot.cpp)
 
+#teleop study executables
+add_executable(delay_study_calibrate_psm teleop_delay_study/calibrate_psm.cpp)
+add_executable(delay_study_velocity_scaling teleop_delay_study/velocity_scaling.cpp)
+add_executable(delay_study_position_scaling teleop_delay_study/position_scaling.cpp)
 
 
 ## Rename C++ executable without prefix
@@ -171,6 +174,7 @@ add_executable(recording_robot examples/recording_robot.cpp)
 target_link_libraries(${PROJECT_NAME}
    ${catkin_LIBRARIES}
    ${Qt5Core_LIBRARIES}
+   ${Eigen3_LIBRARIES}
  )
 
 target_link_libraries(passthrough_psm
@@ -179,13 +183,20 @@ target_link_libraries(passthrough_psm
 target_link_libraries(test_goal_psm
    ${PROJECT_NAME})
 
-target_link_libraries(calibrate_psm_to_env
-    ${PROJECT_NAME})
+target_link_libraries(delay_study_calibrate_psm
+    ${PROJECT_NAME}
+    ${Eigen3_LIBRARIES})
 
 target_link_libraries(csvwriter_psm
     ${PROJECT_NAME})
 
 target_link_libraries(recording_robot
+    ${PROJECT_NAME})
+
+target_link_libraries(delay_study_velocity_scaling
+    ${PROJECT_NAME})
+
+target_link_libraries(delay_study_position_scaling
     ${PROJECT_NAME})
 
 #############
@@ -203,7 +214,10 @@ target_link_libraries(recording_robot
 # )
 
 ## Mark executables and/or libraries for installation
- install(TARGETS ${PROJECT_NAME} passthrough_psm test_goal_psm calibrate_psm_to_env csvwriter_psm recording_robot
+ install(TARGETS ${PROJECT_NAME} passthrough_psm test_goal_psm
+                                 delay_study_calibrate_psm csvwriter_psm
+                                 recording_robot delay_study_velocity_scaling
+                                 delay_study_position_scaling
    ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
    LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
    RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}

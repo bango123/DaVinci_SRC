@@ -2,16 +2,15 @@
 #define VIEWER_H
 
 
-#include<ros/ros.h>
-#include<image_transport/image_transport.h>
-#include<image_transport/camera_subscriber.h>
+#include <ros/ros.h>
+#include <image_transport/image_transport.h>
+#include <image_transport/camera_subscriber.h>
 #include <stereo_msgs/DisparityImage.h>
 
 #include <cv_bridge/cv_bridge.h>
-
 #include <opencv2/core/core.hpp>
 #include <string>
-#include <thread>
+#include <boost/thread.hpp>
 
 
 class Viewer 
@@ -31,19 +30,17 @@ public:
 
   void setResolution(int rows, int cols);
 
-  //Set to true/false
-  bool disp_checkerboard;
-
 private:
 
   //Loop that is executed after run()
   void loop();
 
 	//keep track of the settings:
-	bool m_isFullScreen;
+  bool m_isFullScreen;
   bool m_running;
   bool m_disparity_set_up;
   bool m_disp_disparity;
+  bool m_saveImagePair;
 
   std::string m_filePath;
   int m_imageNumberSaved;
@@ -53,7 +50,7 @@ private:
   //Internal settings for the camera subscribing
   std::string 				m_image_topic1;
   std::string 				m_image_topic2;
-	image_transport::ImageTransport 	m_it;
+  image_transport::ImageTransport 	m_it;
 
   image_transport::Subscriber		m_sub1;
   image_transport::Subscriber		m_sub2;
@@ -70,6 +67,12 @@ private:
   int m_rows;
   int m_cols;
 
+  //Saved pos values
+  int m_pos_x1;
+  int m_pos_y1;
+  int m_pos_x2;
+  int m_pos_y2;
+
   //Used to convert sensor msgs to cv mat
   cv_bridge::CvImageConstPtr cv_ptr1;
   cv_bridge::CvImageConstPtr cv_ptr2;
@@ -77,10 +80,11 @@ private:
 
   ros::Time m_img1_ts;
   ros::Time m_img2_ts;
+
+  static boost::mutex m_mutex;
 	
 
   //Subscribers for disparity
-
   cv::Mat m_disparity;
 
   void disparity_callback(const stereo_msgs::DisparityImage& msg);

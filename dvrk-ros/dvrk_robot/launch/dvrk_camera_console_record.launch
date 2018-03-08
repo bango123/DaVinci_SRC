@@ -4,11 +4,11 @@
         <node type="record" pkg="rosbag" name="robot_recorder"  args="-o /media/arclab/NVME/$(arg filepath)/robot_bag/robot.bag --split --size=1000 -e /dvrk(.*)">
         <param name="mkdir_tmp" command="mkdir -m 777 -p /media/arclab/NVME/$(arg filepath)/robot_bag" />
 	</node>
-
-        <node type="record" pkg="rosbag" name="camera_recorder" args="-o /media/arclab/NVME/$(arg filepath)/camera_bags/ camera.bag --split --size=1000
+<!--
+        <node type="record" pkg="rosbag" name="camera_recorder" args="-o /media/arclab/NVME/$(arg filepath)/camera_bags/ camera.bag
 		-e /stereo/slave/(left|right)/image_raw">
         <param name="mkdir_tmp" command="mkdir -m 777 -p /media/arclab/NVME/$(arg filepath)/camera_bags" />
-	</node>
+        </node>-->
 
         <node type="video_recorder" pkg="image_view" name="camera_video_recorderL" args="_filename:=/media/arclab/NVME/$(arg filepath)/camera_vids/left_cam.avi
         _fps:=30 image:=/stereo/slave/left/image_raw">

@@ -86,14 +86,13 @@ target_link_libraries(${PROJECT_NAME}
 
 
 
-
-#Executable to test the camera capture delegates
-add_executable(testCameraCaptureDelegate examples/testingcameracapturedelegate.cpp)
-target_link_libraries (testCameraCaptureDelegate ${PROJECT_NAME} )
-
-#Exectuable that does the stereopublishing (same as the file above)
+#Exectuable that does the stereopublishing
 add_executable(stereo_publisher src/StereoPublisher.cpp)
 target_link_libraries (stereo_publisher ${PROJECT_NAME} )
+
+#Exectuable that does the imagepublishing for left or right
+add_executable(image_publisher src/ImagePublisher.cpp)
+target_link_libraries (image_publisher ${PROJECT_NAME} )
 
 
 #Install the library onto the system

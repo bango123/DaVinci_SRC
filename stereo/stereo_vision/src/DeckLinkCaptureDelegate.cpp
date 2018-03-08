@@ -1,19 +1,22 @@
 #include <stereo_vision/DeckLinkCaptureDelegate.h>
 
 #include <iostream>
-#include <ctime>
 #include <stdio.h>
-#include <stdlib.h>
 
 #include <ros/ros.h>
 #include <opencv2/core/core.hpp>
+#include <cv_bridge/cv_bridge.h>
+#include <opencv2/imgproc/imgproc.hpp>
 
 
 
-DeckLinkCaptureDelegate::DeckLinkCaptureDelegate(bool isLeftCamera):
+DeckLinkCaptureDelegate::DeckLinkCaptureDelegate(ros::NodeHandle nh, bool isLeftCamera):
     m_refCount(1),
-    m_isLeftCamera(isLeftCamera)
-
+    m_isLeftCamera(isLeftCamera),
+    m_nh(nh),
+    m_cinfo(m_nh),
+    m_it(m_nh),
+    m_image_pub( m_it.advertiseCamera("image_raw", 1) )
 {
   if (m_isLeftCamera){
     m_nameOfCard = "DeckLink 4K Extreme";
@@ -36,15 +39,15 @@ DeckLinkCaptureDelegate::DeckLinkCaptureDelegate(bool isLeftCamera):
      return;
     }
 
-   //Create worker class
+    //Set up rosnode stuff
    if(m_isLeftCamera){
-      ros::NodeHandle nh("stereo/left");
-      workerThread = new PublishImageWorker(m_isLeftCamera, nh);
+     m_cinfo.setCameraName("left");
    }
    else{
-      ros::NodeHandle nh("stereo/right");
-      workerThread = new PublishImageWorker(m_isLeftCamera, nh);
+     m_cinfo.setCameraName("right");
    }
+
+   m_cinfo.loadCameraInfo("file://${ROS_HOME}/camera_info/${NAME}.yaml");
 
    return;
 }
@@ -65,69 +68,48 @@ ULONG DeckLinkCaptureDelegate::Release(void)
   return newRefValue;
 }
 
-//This code gets ran when a frame arrives!!!!
 HRESULT DeckLinkCaptureDelegate::VideoInputFrameArrived(IDeckLinkVideoInputFrame* videoFrame, IDeckLinkAudioInputPacket* audioFrame)
 {
   if(!ros::ok()){
     disconectDeckLink();
   }
 
-  m_FrameCount++;
 
-  //First timestamp!!!
-  std_msgs::Header header = std_msgs::Header();
-  header.stamp = ros::Time::now();
-  //m_HeaderQueue.push_back(header);
-
-  if (m_isLeftCamera){
-    printf("--------- Left New Frame---------\n");
-  }
-  else{
-    printf("---------Right New Frame---------\n");
-  }
-
-  //clock_t currentTime = clock();
-  std::cout << "Frame Rate: " << ( 1 )/(ros::Time::now() - m_timeOfLastFrame).toSec() << std::endl;
-
-  m_timeOfLastFrame = ros::Time::now();
-
-  std::cout << "Time Stamp: " << header.stamp << std::endl;
-  std::cout << "Sequence  : " << header.seq << std::endl;
-  std::cout << "Frame ID  : " << header.frame_id << std::endl;
 
   if( !videoFrame){
     printf("Video Frame is Null\n");
     return E_FAIL;
   }
 
+  //Convert decklinkInput Frame to Mat from OpenCV
   void*	frameBytes;
   videoFrame->GetBytes(&frameBytes);
+  cv::Mat frame(videoFrame->GetHeight(), videoFrame->GetWidth(), CV_8UC2, frameBytes, videoFrame->GetRowBytes());
 
-  //mutex.lock();
-  //m_FrameQueue.push_back(cv::Mat(videoFrame->GetHeight(), videoFrame->GetWidth(), CV_8UC2, frameBytes, videoFrame->GetRowBytes()));
-  //mutex.unlock();
+  cv::cvtColor(frame, frame, CV_YUV2RGB_UYVY);
 
-  std::cout << "Size of buffer: " << m_FrameQueue.size() << std::endl;
+  //Convert Mat from OpenCV to ROS msg
+  cv_bridge::CvImage out_msg;
+  std_msgs::Header header = std_msgs::Header();
+  header.stamp = ros::Time::now();
 
-  if( !workerThread->isRunning() && ros::ok()){
-    //workerThread->setFrame( m_FrameQueue.front(), m_HeaderQueue.front());
-      workerThread->setFrame(cv::Mat(videoFrame->GetHeight(), videoFrame->GetWidth(), CV_8UC2, frameBytes, videoFrame->GetRowBytes()), header);
-    workerThread->start();
+  out_msg.header   = header;
+  out_msg.encoding = sensor_msgs::image_encodings::RGB8;
+  out_msg.image    = frame;
 
-//    mutex.lock();
-//    m_FrameQueue.pop_front();
-//    mutex.unlock();
-//    m_HeaderQueue.pop_front();
-  }
+  sensor_msgs::CameraInfoPtr ci(new sensor_msgs::CameraInfo(m_cinfo.getCameraInfo()));
 
-  if( m_FrameCount%30 == 0){
-    m_FrameQueue.erase( m_FrameQueue.begin(),  m_FrameQueue.end());
-    m_HeaderQueue.erase(m_HeaderQueue.begin(), m_HeaderQueue.end());
-  }
+  ci->header.frame_id = out_msg.header.frame_id;
+  ci->header.stamp    = out_msg.header.stamp;
+
+  ci->height = frame.rows;
+  ci->width  = frame.cols;
+
+  m_image_pub.publish(out_msg.toImageMsg(), ci);
+  frame.release();
 
   return S_OK;
 }
-
 
 HRESULT DeckLinkCaptureDelegate::VideoInputFormatChanged(BMDVideoInputFormatChangedEvents events, IDeckLinkDisplayMode *mode, BMDDetectedVideoInputFormatFlags formatFlags)
 {

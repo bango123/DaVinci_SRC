@@ -68,6 +68,14 @@ void PSM::set_master_jaw(cisst_msgs::FloatStamped  master_jaw){
   m_pub_master_jaw.publish(master_jaw);
 }
 
+void PSM::set_master_jaw(float angle){
+    cisst_msgs::FloatStamped msg;
+    msg.data = angle;
+    msg.header.stamp = ros::Time::now();
+
+    set_master_jaw(msg);
+}
+
 void PSM::set_master_cart_pos(geometry_msgs::PoseStamped master_cart_pos){
   if( m_robot_state != "DVRK_POSITION_CARTESIAN"){
       std::cout << "Command not sent" << std::endl;
@@ -84,6 +92,14 @@ void PSM::set_slave_jaw(cisst_msgs::FloatStamped  slave_jaw){
       return;
   }
   m_pub_slave_jaw.publish(slave_jaw);
+}
+
+void PSM::set_slave_jaw(float angle){
+    cisst_msgs::FloatStamped msg;
+    msg.data = angle;
+    msg.header.stamp = ros::Time::now();
+
+    set_slave_jaw(msg);
 }
 
 void PSM::set_slave_cart_pos(geometry_msgs::PoseStamped slave_cart_pos){
@@ -174,6 +190,7 @@ cisst_msgs::FloatStamped PSM::get_slave_jaw(){
 
     return jawMsg;
 }
+
 
 void PSM::master_target_jawPosCallback(const cisst_msgs::FloatStamped& msg){
  m_master_target_jaw = msg;

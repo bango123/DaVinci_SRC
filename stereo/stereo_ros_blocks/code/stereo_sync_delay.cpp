@@ -32,6 +32,8 @@ boost::circular_buffer<sensor_msgs::Image> messageBuffer_R_delay = boost::circul
 void delayCallback(const cisst_msgs::FloatStamped& msg){
     delay_ms = msg.data;
     delay_s = delay_ms/1000.0;
+    messageBuffer_L_delay.clear();
+    messageBuffer_R_delay.clear();
 }
 
 

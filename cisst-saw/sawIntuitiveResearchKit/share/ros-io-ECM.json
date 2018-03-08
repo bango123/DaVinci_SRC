@@ -3,7 +3,7 @@
     "io-interfaces":
     [
         {
-            "period": 0.005, // in seconds, e.g. 0.005 is 5 ms
+            "period": 0.001, // in seconds, e.g. 0.005 is 5 ms
             "name": "ECM"
         }
     ]

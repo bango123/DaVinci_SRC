@@ -22,8 +22,10 @@ public:
 
   //For these functions make sure the robot state is DVRK_POSITION_CARTESIAN
   void set_master_jaw     (cisst_msgs   ::FloatStamped  master_jaw);
+  void set_master_jaw     (float angle);
   void set_master_cart_pos(geometry_msgs::PoseStamped   master_cart_pos);
   void set_slave_jaw      (cisst_msgs   ::FloatStamped  slave_jaw);
+  void set_slave_jaw      (float angle);
   void set_slave_cart_pos (geometry_msgs::PoseStamped   slave_cart_pos);
 
   //This goes straight to the PSM arm. NOT effected by delay channel

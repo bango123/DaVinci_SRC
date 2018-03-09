@@ -10,7 +10,6 @@
 #include <cv_bridge/cv_bridge.h>
 #include <opencv2/core/core.hpp>
 #include <string>
-#include <boost/thread.hpp>
 
 
 class Viewer 
@@ -79,10 +78,7 @@ private:
   cv_bridge::CvImagePtr      cv_ptr_disp;
 
   ros::Time m_img1_ts;
-  ros::Time m_img2_ts;
-
-  static boost::mutex m_mutex;
-	
+  ros::Time m_img2_ts;	
 
   //Subscribers for disparity
   cv::Mat m_disparity;

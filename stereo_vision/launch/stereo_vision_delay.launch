@@ -3,8 +3,8 @@
     <node name="image_publisher_l"   pkg="stereo_vision"      type="image_publisher" args="l"                            />
     <node name="image_publisher_r"   pkg="stereo_vision"      type="image_publisher" args="r"                            />
 
-    <node name="stereo_sync_delay"  pkg="stereo_ros_blocks"  type="sync_delay"                                          />
+    <node name="sync_delay"          pkg="stereo_vision"      type="stereo_sync_delay"                                          />
 
-    <node name="image_viewer"       pkg="stereo_viewer"      type="stereo_viewer_dvrk" />
+    <node name="image_viewer"        pkg="stereo_vision"      type="stereo_viewer" />
 
 </launch>

@@ -2,7 +2,6 @@
 #define DECKLINKCAPTUREDELEGATE_H
 
 #include "../../DeckLinkAPI/DeckLinkAPI.h"
-#include <stereo_vision/PublishImageWorker.h>
 
 #include <opencv2/core/core.hpp>
 #include <sensor_msgs/image_encodings.h>
@@ -39,8 +38,6 @@ private:
 
   bool m_streamRunning = false;
 
-  //PublishImageWorker*    workerThread;
-
   int32_t                   m_refCount;
   //"DeckLink 4K Extreme" for left camera
   //"DeckLink Studio 2" for right camera
@@ -60,7 +57,6 @@ private:
   image_transport::CameraPublisher        m_image_pub;
   camera_info_manager::CameraInfoManager  m_cinfo;
 
-  QMutex mutex;
 };
 
 #endif // DECKLINKCAPTUREDELEGATE_H

@@ -1,4 +1,4 @@
-#include<stereo_viewer/viewer.h>
+#include<stereo_vision/viewer.h>
 #include<ros/ros.h>
 #include<string>
 #include<iostream>

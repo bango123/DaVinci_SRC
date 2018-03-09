@@ -1,4 +1,4 @@
-#include <stereo_viewer/viewer.h>
+#include <stereo_vision/viewer.h>
 
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
@@ -36,7 +36,7 @@ Viewer::Viewer (ros::NodeHandle nh, const std::string& image_topic1, int pos_x1,
   cv::moveWindow(m_image_topic2.c_str(), pos_x2, pos_y2);
   cv::setWindowProperty(m_image_topic2.c_str(), cv::WND_PROP_FULLSCREEN, 1);
 
-  cv::waitKey(50);
+  cv::waitKey(10);
 
   cv::setMouseCallback(m_image_topic1.c_str(), &Viewer::mouse_callback, this);
   cv::setMouseCallback(m_image_topic2.c_str(), &Viewer::mouse_callback, this);
@@ -56,8 +56,6 @@ Viewer::~Viewer(){
      cv::destroyWindow("Disparity");
   }
 }
-
-boost::mutex Viewer::m_mutex;
 
 void Viewer::run(){
 
@@ -135,11 +133,9 @@ void Viewer::loop(){
         //Check to see if we should save image pair
         if(m_saveImagePair){
             m_saveImagePair = false;
-            m_mutex.lock();
             saveImagePair(m_img1, m_img2,
                           m_filePath + "cam1_" + std::to_string(m_imageNumberSaved) + ".png",
                           m_filePath + "cam2_" + std::to_string(m_imageNumberSaved) + ".png");
-            m_mutex.unlock();
             m_imageNumberSaved++;
 
         }
@@ -204,7 +200,6 @@ void Viewer::display_callback1(const sensor_msgs::ImageConstPtr & msg){
   if(!m_running){
     return;
   }
-  m_mutex.lock();
   new_img = true;
 
   m_img1_ts = msg->header.stamp;
@@ -213,7 +208,6 @@ void Viewer::display_callback1(const sensor_msgs::ImageConstPtr & msg){
   m_img1 = cv_ptr1->image;
 
   cv::cvtColor(m_img1, m_img1, cv::COLOR_BGR2RGB);
-  m_mutex.unlock();
   return;
 }
 
@@ -221,7 +215,6 @@ void Viewer::display_callback2(const sensor_msgs::ImageConstPtr & msg){
   if(!m_running){
     return;
   }
-  m_mutex.lock();
   new_img = true;
 
   m_img2_ts = msg->header.stamp;
@@ -230,7 +223,6 @@ void Viewer::display_callback2(const sensor_msgs::ImageConstPtr & msg){
   m_img2 = cv_ptr2->image;
 
   cv::cvtColor(m_img2, m_img2, cv::COLOR_BGR2RGB);
-  m_mutex.unlock();
   return;
 }
 
@@ -239,10 +231,8 @@ void Viewer::disparity_callback(const stereo_msgs::DisparityImage& msg){
     return;
   }
 
-  m_mutex.lock();
   cv_ptr_disp = cv_bridge::toCvCopy(msg.image);
   m_disparity = cv_ptr_disp->image;
-  m_mutex.unlock();
 
   return;
 }

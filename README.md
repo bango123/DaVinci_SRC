@@ -1,3 +1,5 @@
+THIS REPO IS NO LONGER ACTIVE. HAS BEEN MOVED TO UCSD ARCLAB GIT AND SPLIT INTO MULTIPLE REPOS
+
 To the poor user who is trying to work with this system. There are a few things to note for the installation of the software.
 
 Pre-install:
